@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0a0f0e" />
+  <meta name="theme-color" content="#0d2334" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Catfish Bite Score</title>
@@ -11,18 +11,18 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <style>
     :root {
-      --bg-deep: #0a0f0e;
-      --bg-card: #121a18;
-      --bg-elevated: #182320;
-      --border-river: #263632;
-      --text-primary: #f1f5f3;
-      --text-secondary: #9cb0a8;
-      --text-muted: #687c75;
-      --whisker-gold: #f59e0b;
-      --whisker-bright: #fbbf24;
-      --river-teal: #2dd4bf;
-      --slack-rose: #f43f5e;
-      --moderate-blue: #38bdf8;
+      --bg-deep: #0d2334;
+      --bg-card: #123249;
+      --bg-elevated: #18425e;
+      --border-river: #206373;
+      --text-primary: #f8f1df;
+      --text-secondary: #acb5b4;
+      --text-muted: #7c97a0;
+      --whisker-gold: #efb547;
+      --whisker-bright: #f7c968;
+      --river-teal: #71c2c2;
+      --slack-rose: #e06d53;
+      --moderate-blue: #46a3b5;
     }
 
     * {
@@ -34,7 +34,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at top, #131f1c 0%, var(--bg-deep) 65%);
+      background: radial-gradient(circle at top, #184359 0%, var(--bg-deep) 65%);
       color: var(--text-primary);
       min-height: 100vh;
       padding: 12px 12px 28px;
@@ -135,8 +135,8 @@
 
     .btn:active { transform: scale(0.97); }
     .btn-gold {
-      background: rgba(245, 158, 11, 0.14);
-      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(239, 181, 71, 0.14);
+      border-color: rgba(239, 181, 71, 0.45);
       color: var(--whisker-bright);
     }
 
@@ -148,7 +148,7 @@
     }
 
     .badge-count {
-      background: rgba(245, 158, 11, 0.2);
+      background: rgba(239, 181, 71, 0.2);
       color: var(--whisker-bright);
       padding: 1px 6px;
       border-radius: 999px;
@@ -190,7 +190,7 @@
 
     .gauge-track {
       fill: none;
-      stroke: #1c2925;
+      stroke: #19435b;
       stroke-width: 12;
     }
 
@@ -242,9 +242,9 @@
       text-transform: uppercase;
       padding: 3px 9px;
       border-radius: 999px;
-      background: rgba(245, 158, 11, 0.16);
+      background: rgba(239, 181, 71, 0.16);
       color: var(--whisker-bright);
-      border: 1px solid rgba(245, 158, 11, 0.35);
+      border: 1px solid rgba(239, 181, 71, 0.35);
     }
 
     .hero-subtitle {
@@ -265,7 +265,7 @@
     .timeline-box {
       width: 100%;
       margin-top: 12px;
-      background: #0d1413;
+      background: #0b1e2d;
       border: 1px solid var(--border-river);
       border-radius: 12px;
       padding: 8px 8px 6px;
@@ -284,7 +284,7 @@
       width: 100%;
       height: 6px;
       border-radius: 999px;
-      background: #1f2e2a;
+      background: #1d4e63;
       outline: none;
       margin: 8px 0 4px;
     }
@@ -295,8 +295,8 @@
       height: 20px;
       border-radius: 50%;
       background: var(--whisker-bright);
-      border: 3px solid #0a0f0e;
-      box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+      border: 3px solid #0d2334;
+      box-shadow: 0 0 8px rgba(239, 181, 71, 0.6);
       cursor: pointer;
     }
 
@@ -379,21 +379,21 @@
     }
 
     .driver-pos {
-      background: rgba(45, 212, 191, 0.11);
-      border-color: rgba(45, 212, 191, 0.35);
-      color: #5eead4;
+      background: rgba(113, 194, 194, 0.11);
+      border-color: rgba(113, 194, 194, 0.35);
+      color: #8cd6d6;
     }
 
     .driver-gold {
-      background: rgba(245, 158, 11, 0.13);
-      border-color: rgba(245, 158, 11, 0.38);
+      background: rgba(239, 181, 71, 0.13);
+      border-color: rgba(239, 181, 71, 0.38);
       color: var(--whisker-bright);
     }
 
     .driver-neg {
-      background: rgba(244, 63, 94, 0.13);
-      border-color: rgba(244, 63, 94, 0.38);
-      color: #fda4af;
+      background: rgba(224, 109, 83, 0.13);
+      border-color: rgba(224, 109, 83, 0.38);
+      color: #f5a08c;
     }
 
     /* Logging Footer */
@@ -443,7 +443,7 @@
       display: inline-flex;
       align-items: center;
       background: var(--bg-elevated);
-      border: 1px solid rgba(245, 158, 11, 0.4);
+      border: 1px solid rgba(239, 181, 71, 0.4);
       border-radius: 12px;
       overflow: hidden;
       min-height: 44px;
@@ -460,7 +460,7 @@
       cursor: pointer;
     }
 
-    .qty-btn:active { background: rgba(245, 158, 11, 0.15); }
+    .qty-btn:active { background: rgba(239, 181, 71, 0.15); }
 
     .qty-val {
       min-width: 28px;
@@ -474,8 +474,8 @@
       width: 100%;
       min-height: 44px;
       border-radius: 12px;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.24), rgba(45, 212, 191, 0.18));
-      border: 1px solid rgba(245, 158, 11, 0.55);
+      background: linear-gradient(135deg, rgba(239, 181, 71, 0.24), rgba(113, 194, 194, 0.18));
+      border: 1px solid rgba(239, 181, 71, 0.55);
       color: var(--whisker-bright);
       font-size: 13px;
       font-weight: 800;
@@ -514,7 +514,7 @@
       font-weight: 700;
       padding: 3px 8px;
       border-radius: 999px;
-      background: #0d1413;
+      background: #0b1e2d;
       border: 1px solid var(--border-river);
       color: var(--text-secondary);
     }
@@ -523,7 +523,7 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(5, 8, 7, 0.84);
+      background: rgba(8, 22, 33, 0.86);
       backdrop-filter: blur(4px);
       display: none;
       align-items: center;
@@ -562,7 +562,7 @@
       height: 230px;
       border-radius: 12px;
       border: 1px solid var(--border-river);
-      background: #0d1413;
+      background: #0b1e2d;
       z-index: 1;
     }
 
@@ -612,7 +612,7 @@
       bottom: 18px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: #182320;
+      background: #18425e;
       border: 1px solid var(--whisker-gold);
       color: var(--whisker-bright);
       padding: 8px 14px;
@@ -636,12 +636,20 @@
     <!-- Top Brand & Sync -->
     <div class="brand-bar">
       <div class="brand-title">
-        <!-- Catfish Silhouette Emblem -->
-        <svg width="26" height="16" viewBox="0 0 64 36" fill="none" aria-hidden="true">
-          <path d="M52 18C44 9 30 7 18 11L6 4L10 18L6 32L18 25C30 29 44 27 52 18Z" fill="#f59e0b"/>
-          <path d="M50 16C55 13 60 12 63 13" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
-          <path d="M50 20C55 23 60 24 63 23" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="46" cy="15" r="1.8" fill="#0a0f0e"/>
+        <!-- Emblem Ring + Catfish Badge Matching Artwork -->
+        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="#f8f1df" stroke="#123249" stroke-width="5"/>
+          <circle cx="50" cy="50" r="41" stroke="#efb547" stroke-width="2.5"/>
+          <circle cx="50" cy="50" r="37.5" stroke="#206373" stroke-width="3"/>
+          <!-- Water wave -->
+          <path d="M16 66 Q 34 59, 50 66 T 84 66 A 36 36 0 0 1 16 66 Z" fill="#71c2c2"/>
+          <!-- Leaping Catfish -->
+          <path d="M74 38 C68 29, 55 29, 44 36 C37 40, 31 46, 27 52 L18 47 L23 56 L17 64 L28 59 C36 59, 47 56, 58 49 C67 44, 73 41, 74 38 Z" fill="#123249"/>
+          <path d="M68 41 C60 47, 48 52, 36 54 C45 51, 56 46, 65 39 Z" fill="#71c2c2"/>
+          <path d="M47 34 L51 25 L57 32 Z" fill="#206373"/>
+          <circle cx="67" cy="36" r="1.8" fill="#f8f1df"/>
+          <path d="M73 36 C79 31, 84 30, 88 32" stroke="#efb547" stroke-width="2" stroke-linecap="round"/>
+          <path d="M73 40 C79 42, 84 46, 86 51" stroke="#efb547" stroke-width="2" stroke-linecap="round"/>
         </svg>
         <span>Catfish Bite Score</span>
       </div>
@@ -668,11 +676,18 @@
     <!-- Hero Bite Score Card -->
     <div class="card hero-card">
       <div class="gauge-wrap">
-        <!-- Catfish Watermark -->
+        <!-- Detailed Catfish Watermark -->
         <svg class="catfish-watermark" viewBox="0 0 120 64" fill="none" aria-hidden="true">
-          <path d="M98 32C82 14 54 10 32 18L8 6L15 32L8 58L32 46C54 54 82 50 98 32Z" fill="#fbbf24"/>
-          <path d="M94 27C104 21 113 19 118 21" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
-          <path d="M94 37C104 43 113 45 118 43" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+          <path d="M54 20 L65 7 L73 21 Z" fill="#efb547"/>
+          <path d="M31 23 L37 16 L42 23 Z" fill="#efb547"/>
+          <path d="M68 41 L57 54 L76 43 Z" fill="#efb547"/>
+          <path d="M47 41 L40 50 L53 41 Z" fill="#efb547"/>
+          <path d="M27 38 L22 47 L38 40 Z" fill="#efb547"/>
+          <path d="M97 32 C95 24, 83 19, 66 19 C50 19, 34 23, 21 26 L7 13 L13 32 L7 51 L21 38 C34 41, 50 43, 66 43 C83 43, 95 39, 97 32 Z" fill="#efb547"/>
+          <path d="M94 31 C103 23, 111 21, 118 22" stroke="#efb547" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M95 34 C105 36, 113 40, 119 46" stroke="#efb547" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M90 38 C98 46, 104 52, 108 58" stroke="#efb547" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M85 40 C90 48, 94 54, 96 59" stroke="#efb547" stroke-width="1.8" stroke-linecap="round"/>
         </svg>
 
         <svg class="gauge-svg" viewBox="0 0 188 188">
@@ -705,7 +720,7 @@
       <!-- Animated River Current Wave Strip -->
       <svg id="riverWaveStrip" class="river-wave-strip" viewBox="0 0 720 12" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 6 Q 45 0, 90 6 T 180 6 T 270 6 T 360 6 T 450 6 T 540 6 T 630 6 T 720 6"
-              fill="none" stroke="#2dd4bf" stroke-width="2.5" />
+              fill="none" stroke="#71c2c2" stroke-width="2.5" />
       </svg>
     </div>
 
@@ -1169,10 +1184,10 @@
     }
 
     function getTierInfo(score) {
-      if (score >= 85) return { label: "TROPHY FEED", color: "#fbbf24" };
-      if (score >= 65) return { label: "WHISKERS ACTIVE", color: "#2dd4bf" };
-      if (score >= 40) return { label: "PICKY BITE", color: "#38bdf8" };
-      return { label: "LOCKJAW / SLACK", color: "#f43f5e" };
+      if (score >= 85) return { label: "TROPHY FEED", color: "#efb547" };
+      if (score >= 65) return { label: "WHISKERS ACTIVE", color: "#71c2c2" };
+      if (score >= 40) return { label: "PICKY BITE", color: "#46a3b5" };
+      return { label: "LOCKJAW / SLACK", color: "#e06d53" };
     }
 
     function renderAll() {
@@ -1282,9 +1297,9 @@
       svg.innerHTML = `
         ${bands}
         <polyline fill="none" stroke="rgba(45,212,191,0.35)" stroke-width="1.5" stroke-dasharray="3,3" points="${tidePts}" />
-        <polyline fill="none" stroke="#fbbf24" stroke-width="2.2" points="${scorePts}" />
-        <line x1="${curX.toFixed(1)}" y1="0" x2="${curX.toFixed(1)}" y2="${h}" stroke="#f1f5f3" stroke-width="1.2" />
-        <circle cx="${curX.toFixed(1)}" cy="${curY.toFixed(1)}" r="4.5" fill="#fbbf24" stroke="#0a0f0e" stroke-width="1.5" />
+        <polyline fill="none" stroke="#efb547" stroke-width="2.2" points="${scorePts}" />
+        <line x1="${curX.toFixed(1)}" y1="0" x2="${curX.toFixed(1)}" y2="${h}" stroke="#f8f1df" stroke-width="1.2" />
+        <circle cx="${curX.toFixed(1)}" cy="${curY.toFixed(1)}" r="4.5" fill="#efb547" stroke="#0d2334" stroke-width="1.5" />
       `;
     }
 
@@ -1490,7 +1505,7 @@
             <div class="pin-item-sub">${pin.lat.toFixed(4)}, ${pin.lon.toFixed(4)} · ${pin.isTidal ? "Tidal" : "Stillwater"}</div>
           </div>
           <button class="btn" data-rename-id="${pin.id}" title="Rename">✎</button>
-          <button class="btn" data-delete-id="${pin.id}" title="Delete" style="color:#fda4af;">✕</button>
+          <button class="btn" data-delete-id="${pin.id}" title="Delete" style="color:#f5a08c;">✕</button>
         </div>
       `).join("");
 
