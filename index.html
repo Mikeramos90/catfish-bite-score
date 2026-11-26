@@ -172,55 +172,55 @@
       padding-bottom: 18px;
     }
 
+    .header-app-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      object-fit: cover;
+      border: 1.5px solid var(--whisker-gold);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      flex-shrink: 0;
+    }
+
     .gauge-wrap {
       position: relative;
-      width: 188px;
-      height: 188px;
+      width: 100%;
+      max-width: 336px;
+      height: 178px;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 2px 0 6px;
     }
 
-    .gauge-svg {
-      width: 188px;
-      height: 188px;
-      transform: rotate(-90deg);
+    .rod-gauge-svg {
+      width: 100%;
+      height: 178px;
+      display: block;
+      overflow: visible;
     }
 
-    .gauge-track {
+    .rod-blank {
       fill: none;
-      stroke: #19435b;
-      stroke-width: 12;
-    }
-
-    .gauge-progress {
-      fill: none;
-      stroke: var(--whisker-gold);
-      stroke-width: 12;
       stroke-linecap: round;
-      transition: stroke-dashoffset 0.35s ease, stroke 0.35s ease;
+      transition: d 0.32s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
     }
 
-    .catfish-watermark {
-      position: absolute;
-      width: 116px;
-      height: 60px;
-      opacity: 0.09;
-      pointer-events: none;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -52%);
+    .rod-line {
+      fill: none;
+      stroke-dasharray: 4 3;
+      transition: d 0.32s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.3s ease;
     }
 
-    .gauge-center {
+    .gauge-readout {
       position: absolute;
-      inset: 0;
+      right: 6px;
+      top: 12px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      align-items: flex-end;
+      text-align: right;
+      pointer-events: none;
     }
 
     .score-num {
@@ -636,21 +636,7 @@
     <!-- Top Brand & Sync -->
     <div class="brand-bar">
       <div class="brand-title">
-        <!-- Emblem Ring + Catfish Badge Matching Artwork -->
-        <svg width="34" height="34" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <circle cx="50" cy="50" r="46" fill="#f8f1df" stroke="#123249" stroke-width="5"/>
-          <circle cx="50" cy="50" r="41" stroke="#efb547" stroke-width="2.5"/>
-          <circle cx="50" cy="50" r="37.5" stroke="#206373" stroke-width="3"/>
-          <!-- Water wave -->
-          <path d="M16 66 Q 34 59, 50 66 T 84 66 A 36 36 0 0 1 16 66 Z" fill="#71c2c2"/>
-          <!-- Leaping Catfish -->
-          <path d="M74 38 C68 29, 55 29, 44 36 C37 40, 31 46, 27 52 L18 47 L23 56 L17 64 L28 59 C36 59, 47 56, 58 49 C67 44, 73 41, 74 38 Z" fill="#123249"/>
-          <path d="M68 41 C60 47, 48 52, 36 54 C45 51, 56 46, 65 39 Z" fill="#71c2c2"/>
-          <path d="M47 34 L51 25 L57 32 Z" fill="#206373"/>
-          <circle cx="67" cy="36" r="1.8" fill="#f8f1df"/>
-          <path d="M73 36 C79 31, 84 30, 88 32" stroke="#efb547" stroke-width="2" stroke-linecap="round"/>
-          <path d="M73 40 C79 42, 84 46, 86 51" stroke="#efb547" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <img src="app-icon.png" alt="Catfish Bite Score Icon" class="header-app-icon" />
         <span>Catfish Bite Score</span>
       </div>
       <button id="syncBtn" class="sync-pill" title="Refresh live feeds">
@@ -676,29 +662,40 @@
     <!-- Hero Bite Score Card -->
     <div class="card hero-card">
       <div class="gauge-wrap">
-        <!-- Detailed Catfish Watermark -->
-        <svg class="catfish-watermark" viewBox="0 0 120 64" fill="none" aria-hidden="true">
-          <path d="M54 20 L65 7 L73 21 Z" fill="#efb547"/>
-          <path d="M31 23 L37 16 L42 23 Z" fill="#efb547"/>
-          <path d="M68 41 L57 54 L76 43 Z" fill="#efb547"/>
-          <path d="M47 41 L40 50 L53 41 Z" fill="#efb547"/>
-          <path d="M27 38 L22 47 L38 40 Z" fill="#efb547"/>
-          <path d="M97 32 C95 24, 83 19, 66 19 C50 19, 34 23, 21 26 L7 13 L13 32 L7 51 L21 38 C34 41, 50 43, 66 43 C83 43, 95 39, 97 32 Z" fill="#efb547"/>
-          <path d="M94 31 C103 23, 111 21, 118 22" stroke="#efb547" stroke-width="2.6" stroke-linecap="round"/>
-          <path d="M95 34 C105 36, 113 40, 119 46" stroke="#efb547" stroke-width="2.6" stroke-linecap="round"/>
-          <path d="M90 38 C98 46, 104 52, 108 58" stroke="#efb547" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M85 40 C90 48, 94 54, 96 59" stroke="#efb547" stroke-width="1.8" stroke-linecap="round"/>
+        <svg id="rodGaugeSvg" class="rod-gauge-svg" viewBox="0 0 336 178" aria-label="Bending fishing rod bite score gauge">
+          <defs>
+            <linearGradient id="rodGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#acb5b4"/>
+              <stop offset="55%" stop-color="#71c2c2"/>
+              <stop offset="100%" stop-color="#efb547"/>
+            </linearGradient>
+          </defs>
+          <!-- Subtle reference arc showing max bend -->
+          <path d="M 48 148 Q 168 32, 268 122" fill="none" stroke="rgba(113,194,194,0.14)" stroke-width="2" stroke-dasharray="4 4"/>
+          <!-- Rod handle & reel seat -->
+          <line x1="16" y1="162" x2="54" y2="144" stroke="#acb5b4" stroke-width="8.5" stroke-linecap="round"/>
+          <circle cx="40" cy="151" r="6" fill="#206373" stroke="#efb547" stroke-width="2"/>
+          <!-- Bending rod blank -->
+          <path id="rodBlankPath" class="rod-blank" d="M 54 144 Q 155 62, 265 56" stroke="url(#rodGrad)" stroke-width="5.5"/>
+          <!-- Rod guides -->
+          <circle id="rodGuide1" cx="122" cy="94" r="3" fill="#0d2334" stroke="#efb547" stroke-width="1.6"/>
+          <circle id="rodGuide2" cx="192" cy="66" r="2.8" fill="#0d2334" stroke="#efb547" stroke-width="1.6"/>
+          <!-- Fishing line from rod tip down to hooked catfish -->
+          <path id="rodLinePath" class="rod-line" d="M 265 56 L 265 112" stroke="#f8f1df" stroke-width="1.6"/>
+          <!-- Hooked Catfish silhouette scaling/dipping with bite weight -->
+          <g id="hookedCatfish" transform="translate(265, 118)">
+            <path d="M 18 -2 C 12 -9, 2 -9, -7 -4 L -16 -10 L -12 -1 L -17 7 L -7 3 C 1 5, 12 4, 18 -2 Z" fill="#efb547"/>
+            <path d="M -2 -5 L 2 -12 L 6 -5 Z" fill="#71c2c2"/>
+            <circle cx="12" cy="-4" r="1.5" fill="#0d2334"/>
+            <path d="M 17 -3 C 22 -7, 26 -8, 29 -7" stroke="#f8f1df" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M 17 0 C 22 2, 26 5, 29 9" stroke="#f8f1df" stroke-width="1.4" stroke-linecap="round"/>
+          </g>
         </svg>
 
-        <svg class="gauge-svg" viewBox="0 0 188 188">
-          <circle class="gauge-track" cx="94" cy="94" r="78"></circle>
-          <circle id="gaugeProgress" class="gauge-progress" cx="94" cy="94" r="78"
-                  stroke-dasharray="490.09" stroke-dashoffset="490.09"></circle>
-        </svg>
-
-        <div class="gauge-center">
+        <div class="gauge-readout">
           <div id="heroScore" class="score-num">--</div>
           <div id="heroTier" class="tier-badge">LOADING</div>
+          <div id="rodLoadLabel" class="hero-meta" style="margin-top:4px; font-weight:700;">-- lb pull</div>
         </div>
       </div>
 
@@ -1202,10 +1199,52 @@
       tierEl.style.color = tier.color;
       tierEl.style.borderColor = tier.color + "55";
 
-      const circ = 490.09;
-      const gaugeEl = document.getElementById("gaugeProgress");
-      gaugeEl.style.strokeDashoffset = circ * (1 - slot.score / 100);
-      gaugeEl.style.stroke = tier.color;
+      // Bend fishing rod more deeply as bite score (0..100) increases (like heavier fish pull)
+      const t = Math.max(0, Math.min(1, slot.score / 100));
+      const tipX = 276 - t * 24;          // 276 -> 252 as rod arches
+      const tipY = 44 + t * 66;           // 44 (light tip) -> 110 (deep parabolic bend)
+      const ctrlX = 152 + t * 24;         // control point shifts forward & arches up
+      const ctrlY = 72 - t * 26 + t * t * 44;
+
+      const rodPathEl = document.getElementById("rodBlankPath");
+      rodPathEl.setAttribute("d", `M 54 144 Q ${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)}, ${tipX.toFixed(1)} ${tipY.toFixed(1)}`);
+      rodPathEl.style.stroke = tier.color;
+
+      // Update two rod guides along quadratic Bezier at u = 0.35 and u = 0.7
+      const qPt = (u) => {
+        const inv = 1 - u;
+        return {
+          x: inv * inv * 54 + 2 * inv * u * ctrlX + u * u * tipX,
+          y: inv * inv * 144 + 2 * inv * u * ctrlY + u * u * tipY
+        };
+      };
+      const g1 = qPt(0.35);
+      const g2 = qPt(0.70);
+      document.getElementById("rodGuide1").setAttribute("cx", g1.x.toFixed(1));
+      document.getElementById("rodGuide1").setAttribute("cy", g1.y.toFixed(1));
+      document.getElementById("rodGuide2").setAttribute("cx", g2.x.toFixed(1));
+      document.getElementById("rodGuide2").setAttribute("cy", g2.y.toFixed(1));
+
+      // Line from rod tip down to hooked catfish
+      const fishY = Math.min(154, tipY + 26 + t * 18);
+      const lineBowX = tipX + 6 + t * 8;
+      const lineBowY = (tipY + fishY) / 2;
+      document.getElementById("rodLinePath").setAttribute(
+        "d",
+        `M ${tipX.toFixed(1)} ${tipY.toFixed(1)} Q ${lineBowX.toFixed(1)} ${lineBowY.toFixed(1)}, ${tipX.toFixed(1)} ${fishY.toFixed(1)}`
+      );
+
+      // Scale & tilt hooked catfish to represent heavier fish as score rises
+      const fishScale = (0.72 + t * 0.58).toFixed(2);
+      const fishTilt = (-8 - t * 22).toFixed(1);
+      document.getElementById("hookedCatfish").setAttribute(
+        "transform",
+        `translate(${tipX.toFixed(1)}, ${fishY.toFixed(1)}) rotate(${fishTilt}) scale(${fishScale})`
+      );
+
+      const estLbs = Math.max(2, Math.round(2 + Math.pow(t, 1.35) * 48));
+      const bendPct = Math.round(t * 100);
+      document.getElementById("rodLoadLabel").textContent = `${bendPct}% bend · ~${estLbs} lb pull`;
 
       document.getElementById("heroSubtitle").textContent = `${formatMinutes(slot.min)} · ${slot.phaseLabel}`;
       document.getElementById("heroMeta").textContent =
