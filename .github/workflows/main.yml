@@ -41,25 +41,16 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Apply Catfish Launcher Icons & Build Debug APK
+      - name: Apply Custom Catfish Icon & Build Debug APK
         run: |
           pip install --break-system-packages pillow
           python3 -c '
           import glob
-          from PIL import Image, ImageDraw
-          img = Image.new("RGBA", (512, 512), (10, 15, 14, 255))
-          d = ImageDraw.Draw(img)
-          d.polygon([(210, 185), (265, 115), (305, 190)], fill=(217, 119, 6, 255))
-          d.polygon([(285, 315), (225, 395), (335, 325)], fill=(217, 119, 6, 255))
-          d.ellipse([115, 185, 395, 325], fill=(245, 158, 11, 255))
-          d.polygon([(140, 255), (55, 175), (90, 255), (55, 335)], fill=(245, 158, 11, 255))
-          d.ellipse([340, 220, 362, 242], fill=(10, 15, 14, 255))
-          d.line([(380, 245), (445, 200), (480, 208)], fill=(251, 191, 36, 255), width=10)
-          d.line([(385, 265), (450, 285), (485, 320)], fill=(251, 191, 36, 255), width=10)
-          d.line([(360, 290), (415, 345), (435, 380)], fill=(251, 191, 36, 255), width=8)
+          from PIL import Image
+          src = Image.open("app-icon.png").convert("RGBA")
           for path in glob.glob("android/app/src/main/res/mipmap-*/ic_launcher*.png"):
             size = Image.open(path).size
-            img.resize(size, Image.Resampling.LANCZOS).save(path)
+            src.resize(size, Image.Resampling.LANCZOS).save(path)
           '
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           cd android
@@ -71,7 +62,7 @@ jobs:
             if [ "$attempt" -eq 4 ]; then
               exit 1
             fi
-            echo "Gradle hit rate limit or transient error on attempt $attempt, retrying in 20s..."
+            echo "Gradle hit transient error on attempt $attempt, retrying in 20s..."
             sleep 20
           done
 
