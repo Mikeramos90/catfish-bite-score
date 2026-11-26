@@ -26,6 +26,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Prepare Web Assets
+        run: |
+          mkdir -p www
+          if [ -f index.html ]; then
+            cp index.html www/index.html
+          fi
+
       - name: Install Capacitor & Sync Android Project
         run: |
           npm init -y
@@ -34,8 +41,25 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Accept SDK Licenses & Build Debug APK
+      - name: Apply Catfish Launcher Icons & Build Debug APK
         run: |
+          python3 -c '
+          import glob
+          from PIL import Image, ImageDraw
+          img = Image.new("RGBA", (512, 512), (10, 15, 14, 255))
+          d = ImageDraw.Draw(img)
+          d.polygon([(210, 185), (265, 115), (305, 190)], fill=(217, 119, 6, 255))
+          d.polygon([(285, 315), (225, 395), (335, 325)], fill=(217, 119, 6, 255))
+          d.ellipse([115, 185, 395, 325], fill=(245, 158, 11, 255))
+          d.polygon([(140, 255), (55, 175), (90, 255), (55, 335)], fill=(245, 158, 11, 255))
+          d.ellipse([340, 220, 362, 242], fill=(10, 15, 14, 255))
+          d.line([(380, 245), (445, 200), (480, 208)], fill=(251, 191, 36, 255), width=10)
+          d.line([(385, 265), (450, 285), (485, 320)], fill=(251, 191, 36, 255), width=10)
+          d.line([(360, 290), (415, 345), (435, 380)], fill=(251, 191, 36, 255), width=8)
+          for path in glob.glob("android/app/src/main/res/mipmap-*/ic_launcher*.png"):
+            size = Image.open(path).size
+            img.resize(size, Image.Resampling.LANCZOS).save(path)
+          '
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
           cd android
           chmod +x gradlew
@@ -46,4 +70,3 @@ jobs:
         with:
           name: Catfish-Bite-Score-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
-          
