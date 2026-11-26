@@ -43,6 +43,7 @@ jobs:
 
       - name: Apply Catfish Launcher Icons & Build Debug APK
         run: |
+          pip install --break-system-packages pillow
           python3 -c '
           import glob
           from PIL import Image, ImageDraw
@@ -70,3 +71,4 @@ jobs:
         with:
           name: Catfish-Bite-Score-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
