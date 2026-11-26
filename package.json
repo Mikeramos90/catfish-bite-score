@@ -1,0 +1,17 @@
+{
+  "name": "catfish-bite-score",
+  "version": "1.0.0",
+  "description": "Catfish Bite Score mobile app powered by NOAA tides, USGS river discharge, Open-Meteo barometric trends, and adaptive catch calibration.",
+  "scripts": {
+    "cap:init": "npx cap add android",
+    "cap:sync": "npx cap copy android && npx cap sync android",
+    "apk:debug": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}
