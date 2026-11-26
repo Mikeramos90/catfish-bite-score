@@ -26,9 +26,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Ensure Capacitor Config Exists
         run: |
           if [ ! -f capacitor.config.json ]; then
@@ -47,8 +44,9 @@ jobs:
           npx cap add android
           npx cap sync android
 
-      - name: Build Debug APK
+      - name: Accept SDK Licenses & Build Debug APK
         run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
