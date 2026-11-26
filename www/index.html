@@ -102,3 +102,1591 @@
 
     select, input[type="date"], input[type="text"] {
       background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-river);
+      border-radius: 10px;
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      width: 100%;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--whisker-gold);
+    }
+
+    .btn {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border-river);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: transform 0.08s ease, border-color 0.15s ease;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn-gold {
+      background: rgba(245, 158, 11, 0.14);
+      border-color: rgba(245, 158, 11, 0.45);
+      color: var(--whisker-bright);
+    }
+
+    .sub-controls {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge-count {
+      background: rgba(245, 158, 11, 0.2);
+      color: var(--whisker-bright);
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    /* Hero Card */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-river);
+      border-radius: 16px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 18px;
+    }
+
+    .gauge-wrap {
+      position: relative;
+      width: 188px;
+      height: 188px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2px 0 6px;
+    }
+
+    .gauge-svg {
+      width: 188px;
+      height: 188px;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: #1c2925;
+      stroke-width: 12;
+    }
+
+    .gauge-progress {
+      fill: none;
+      stroke: var(--whisker-gold);
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.35s ease, stroke 0.35s ease;
+    }
+
+    .catfish-watermark {
+      position: absolute;
+      width: 116px;
+      height: 60px;
+      opacity: 0.09;
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -52%);
+    }
+
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .score-num {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -1.5px;
+      color: var(--text-primary);
+    }
+
+    .tier-badge {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(245, 158, 11, 0.16);
+      color: var(--whisker-bright);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .hero-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      text-align: center;
+    }
+
+    /* Timeline SVG & Scrubber */
+    .timeline-box {
+      width: 100%;
+      margin-top: 12px;
+      background: #0d1413;
+      border: 1px solid var(--border-river);
+      border-radius: 12px;
+      padding: 8px 8px 6px;
+    }
+
+    .timeline-svg {
+      width: 100%;
+      height: 76px;
+      display: block;
+      cursor: ew-resize;
+      touch-action: none;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #1f2e2a;
+      outline: none;
+      margin: 8px 0 4px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--whisker-bright);
+      border: 3px solid #0a0f0e;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+      cursor: pointer;
+    }
+
+    .axis-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0 2px;
+    }
+
+    .peaks-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .peak-chip {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-river);
+      border-radius: 10px;
+      padding: 7px 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .peak-chip:hover { border-color: var(--whisker-gold); }
+    .peak-time { font-size: 11px; font-weight: 800; color: var(--text-primary); }
+    .peak-score { font-size: 10px; font-weight: 700; color: var(--whisker-bright); margin-top: 2px; }
+
+    /* River Wave Strip */
+    .river-wave-strip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 8px;
+      opacity: 0.35;
+      pointer-events: none;
+      animation: riverFlow 7s linear infinite;
+    }
+
+    .river-wave-strip.slack {
+      animation-duration: 28s;
+      opacity: 0.16;
+    }
+
+    @keyframes riverFlow {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Score Drivers */
+    .section-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .drivers-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .driver-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-river);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .driver-pos {
+      background: rgba(45, 212, 191, 0.11);
+      border-color: rgba(45, 212, 191, 0.35);
+      color: #5eead4;
+    }
+
+    .driver-gold {
+      background: rgba(245, 158, 11, 0.13);
+      border-color: rgba(245, 158, 11, 0.38);
+      color: var(--whisker-bright);
+    }
+
+    .driver-neg {
+      background: rgba(244, 63, 94, 0.13);
+      border-color: rgba(244, 63, 94, 0.38);
+      color: #fda4af;
+    }
+
+    /* Logging Footer */
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .bias-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reset-link {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .log-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .catch-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 44px;
+    }
+
+    .qty-btn {
+      width: 36px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      color: var(--whisker-bright);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .qty-btn:active { background: rgba(245, 158, 11, 0.15); }
+
+    .qty-val {
+      min-width: 28px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .btn-log-bite {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.24), rgba(45, 212, 191, 0.18));
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      color: var(--whisker-bright);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-skunk {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-river);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .recent-logs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .log-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #0d1413;
+      border: 1px solid var(--border-river);
+      color: var(--text-secondary);
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 7, 0.84);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-river);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--whisker-bright);
+    }
+
+    #pinMap {
+      width: 100%;
+      height: 230px;
+      border-radius: 12px;
+      border: 1px solid var(--border-river);
+      background: #0d1413;
+      z-index: 1;
+    }
+
+    .detect-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-river);
+      color: var(--river-teal);
+    }
+
+    .pin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 8px 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-river);
+      border-radius: 10px;
+    }
+
+    .pin-item-info {
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .pin-item-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pin-item-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #182320;
+      border: 1px solid var(--whisker-gold);
+      color: var(--whisker-bright);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Brand & Sync -->
+    <div class="brand-bar">
+      <div class="brand-title">
+        <!-- Catfish Silhouette Emblem -->
+        <svg width="26" height="16" viewBox="0 0 64 36" fill="none" aria-hidden="true">
+          <path d="M52 18C44 9 30 7 18 11L6 4L10 18L6 32L18 25C30 29 44 27 52 18Z" fill="#f59e0b"/>
+          <path d="M50 16C55 13 60 12 63 13" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+          <path d="M50 20C55 23 60 24 63 23" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="46" cy="15" r="1.8" fill="#0a0f0e"/>
+        </svg>
+        <span>Catfish Bite Score</span>
+      </div>
+      <button id="syncBtn" class="sync-pill" title="Refresh live feeds">
+        <span id="syncDot" class="sync-dot"></span>
+        <span id="syncLabel">SYNCING...</span>
+      </button>
+    </div>
+
+    <!-- Location Selector & Pin Controls -->
+    <div class="controls-row">
+      <select id="locationSelect" aria-label="Select fishing location"></select>
+      <button id="openDropPinBtn" class="btn btn-gold">📍 Drop Pin</button>
+      <button id="openManagePinsBtn" class="btn">Pins <span id="pinCountBadge" class="badge-count">0</span></button>
+    </div>
+
+    <!-- Date & NOW Jump -->
+    <div class="sub-controls">
+      <input type="date" id="datePicker" aria-label="Select date" />
+      <button id="nowBtn" class="btn">NOW</button>
+      <button id="refreshBtn" class="btn" title="Refresh feeds">↻</button>
+    </div>
+
+    <!-- Hero Bite Score Card -->
+    <div class="card hero-card">
+      <div class="gauge-wrap">
+        <!-- Catfish Watermark -->
+        <svg class="catfish-watermark" viewBox="0 0 120 64" fill="none" aria-hidden="true">
+          <path d="M98 32C82 14 54 10 32 18L8 6L15 32L8 58L32 46C54 54 82 50 98 32Z" fill="#fbbf24"/>
+          <path d="M94 27C104 21 113 19 118 21" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+          <path d="M94 37C104 43 113 45 118 43" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+
+        <svg class="gauge-svg" viewBox="0 0 188 188">
+          <circle class="gauge-track" cx="94" cy="94" r="78"></circle>
+          <circle id="gaugeProgress" class="gauge-progress" cx="94" cy="94" r="78"
+                  stroke-dasharray="490.09" stroke-dashoffset="490.09"></circle>
+        </svg>
+
+        <div class="gauge-center">
+          <div id="heroScore" class="score-num">--</div>
+          <div id="heroTier" class="tier-badge">LOADING</div>
+        </div>
+      </div>
+
+      <div id="heroSubtitle" class="hero-subtitle">Calculating river conditions...</div>
+      <div id="heroMeta" class="hero-meta">Moon --% · Sunset --:--</div>
+
+      <!-- 24h Interactive Timeline -->
+      <div class="timeline-box">
+        <svg id="timelineSvg" class="timeline-svg" viewBox="0 0 360 76" preserveAspectRatio="none"></svg>
+        <input type="range" id="timeSlider" min="0" max="1435" step="5" value="720" aria-label="Time of day scrubber" />
+        <div class="axis-labels">
+          <span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>12a</span>
+        </div>
+      </div>
+
+      <!-- Top 3 Peak Windows -->
+      <div id="peaksRow" class="peaks-row"></div>
+
+      <!-- Animated River Current Wave Strip -->
+      <svg id="riverWaveStrip" class="river-wave-strip" viewBox="0 0 720 12" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 6 Q 45 0, 90 6 T 180 6 T 270 6 T 360 6 T 450 6 T 540 6 T 630 6 T 720 6"
+              fill="none" stroke="#2dd4bf" stroke-width="2.5" />
+      </svg>
+    </div>
+
+    <!-- Score Drivers (+/- Pills) -->
+    <div class="card">
+      <div class="section-label">Score Drivers</div>
+      <div id="driversWrap" class="drivers-wrap"></div>
+    </div>
+
+    <!-- Multi-Catch Bite Calibration Logger -->
+    <div class="card">
+      <div class="log-header">
+        <span id="biasSummary" class="bias-text">In 1.05x · Out 0.95x (0 fish / 0 logs)</span>
+        <button id="resetLogsBtn" class="reset-link">Reset logs</button>
+      </div>
+      <div class="log-stack">
+        <div class="catch-row">
+          <div class="qty-stepper">
+            <button type="button" id="qtyMinusBtn" class="qty-btn" aria-label="Decrease catch count">−</button>
+            <span id="catchQtyVal" class="qty-val">1</span>
+            <button type="button" id="qtyPlusBtn" class="qty-btn" aria-label="Increase catch count">+</button>
+          </div>
+          <button type="button" id="logBiteBtn" class="btn-log-bite">✓ Landed Catfish</button>
+        </div>
+        <button type="button" id="logSkunkBtn" class="btn-skunk">✕ Skunked / No Bites</button>
+      </div>
+      <div id="recentLogsWrap" class="recent-logs"></div>
+    </div>
+  </div>
+
+  <!-- Drop Pin Modal -->
+  <div id="dropPinModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span>📍 Drop Fishing Spot Pin</span>
+        <button id="closeDropPinBtn" class="btn">✕</button>
+      </div>
+      <div id="pinMap"></div>
+      <div id="pinCoordsText" class="hero-meta">Tap map to place pin</div>
+      <div id="autoDetectBadge" class="detect-pill">Auto-detecting Tidal vs. Stillwater...</div>
+      <input type="text" id="pinNameInput" placeholder="Spot name (e.g., Ferry Point Pilings)" maxlength="40" />
+      <button id="savePinBtn" class="btn btn-gold" style="width:100%; min-height:42px;">Save & Load Spot</button>
+    </div>
+  </div>
+
+  <!-- Manage Pins Modal -->
+  <div id="managePinsModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-head">
+        <span>Saved Fishing Pins</span>
+        <button id="closeManagePinsBtn" class="btn">✕</button>
+      </div>
+      <div id="savedPinsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    const PRESETS = [
+      {
+        id: "ferry_point",
+        name: "Ferry Point Bridge (Chickahominy)",
+        lat: 37.2602,
+        lon: -76.8753,
+        isTidal: true,
+        noaaStation: "8638442",
+        usgsSite: "02042500",
+        axisDeg: 135
+      },
+      {
+        id: "york_river_pier",
+        name: "York River State Park Pier",
+        lat: 37.4126,
+        lon: -76.7125,
+        isTidal: true,
+        noaaStation: "8637689",
+        usgsSite: "02042500",
+        axisDeg: 120
+      },
+      {
+        id: "little_creek",
+        name: "Little Creek Reservoir",
+        lat: 37.3585,
+        lon: -76.8421,
+        isTidal: false,
+        noaaStation: null,
+        usgsSite: "02042500",
+        axisDeg: 135
+      }
+    ];
+
+    const STORAGE_PINS_KEY = "catfish_saved_pins_v1";
+    const STORAGE_LOGS_KEY = "catfish_bite_logs_v1";
+
+    let state = {
+      selectedLocId: "ferry_point",
+      dateStr: toLocalDateInput(new Date()),
+      minuteOfDay: new Date().getHours() * 60 + Math.floor(new Date().getMinutes() / 5) * 5,
+      catchQty: 1,
+      savedPins: loadSavedPins(),
+      logs: loadLogs(),
+      liveStatus: "offline",
+      tideEvents: [],
+      baroSeries: null,
+      windSeries: null,
+      usgsData: null,
+      daySlots: []
+    };
+
+    let mapInstance = null;
+    let mapMarker = null;
+    let pendingPin = {
+      lat: 37.2602,
+      lon: -76.8753,
+      isTidal: true,
+      noaaStation: "8638442",
+      usgsSite: "02042500",
+      axisDeg: 135
+    };
+
+    function toLocalDateInput(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function loadSavedPins() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_PINS_KEY)) || [];
+      } catch { return []; }
+    }
+
+    function saveSavedPins() {
+      localStorage.setItem(STORAGE_PINS_KEY, JSON.stringify(state.savedPins));
+    }
+
+    function loadLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_LOGS_KEY)) || [];
+      } catch { return []; }
+    }
+
+    function saveLogs() {
+      localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(state.logs));
+    }
+
+    function getAllLocations() {
+      return [...PRESETS, ...state.savedPins];
+    }
+
+    function getActiveLocation() {
+      return getAllLocations().find(l => l.id === state.selectedLocId) || PRESETS[0];
+    }
+
+    function formatMinutes(mins) {
+      const wrapped = ((mins % 1440) + 1440) % 1440;
+      let h = Math.floor(wrapped / 60);
+      const m = wrapped % 60;
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      return `${h}:${String(m).padStart(2, "0")} ${ampm}`;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    function fetchWithTimeout(url, ms = 4000) {
+      const ctrl = new AbortController();
+      const id = setTimeout(() => ctrl.abort(), ms);
+      return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(id));
+    }
+
+    // Astronomical & Solunar Helpers
+    function getSolarTimes(dateStr, lat, lon) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const utcNoon = Date.UTC(y, m - 1, d, 12, 0, 0);
+      const dayOfYear = Math.floor((utcNoon - Date.UTC(y, 0, 0)) / 86400000);
+      const decl = 23.44 * Math.sin(((2 * Math.PI) / 365) * (dayOfYear - 81)) * (Math.PI / 180);
+      const latRad = lat * (Math.PI / 180);
+      const cosH = (Math.sin(-0.833 * Math.PI / 180) - Math.sin(latRad) * Math.sin(decl)) /
+                   (Math.cos(latRad) * Math.cos(decl));
+      const clampedCos = Math.max(-1, Math.min(1, cosH));
+      const halfDayHours = (Math.acos(clampedCos) * 180 / Math.PI) / 15;
+      const tzOffset = -new Date(y, m - 1, d, 12, 0).getTimezoneOffset() / 60;
+      const solarNoon = 12 - (lon / 15) + tzOffset;
+      const sunriseMin = Math.round((solarNoon - halfDayHours) * 60);
+      const sunsetMin = Math.round((solarNoon + halfDayHours) * 60);
+      return { sunriseMin, sunsetMin };
+    }
+
+    function getMoonPhaseAndWindows(dateStr, lon) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const targetMs = Date.UTC(y, m - 1, d, 12, 0, 0);
+      const knownNewMoon = Date.UTC(2000, 0, 6, 18, 14, 0);
+      const synodic = 29.53058867;
+      const age = (((targetMs - knownNewMoon) / 86400000) % synodic + synodic) % synodic;
+      const phaseAngle = (age / synodic) * 2 * Math.PI;
+      const illum = Math.round(((1 - Math.cos(phaseAngle)) / 2) * 100);
+      const lunarTransitMin = Math.round(((age / synodic) * 1440 - (lon % 15) * 4 + 1440) % 1440);
+      const underfootMin = (lunarTransitMin + 720) % 1440;
+      const moonriseMin = (lunarTransitMin - 360 + 1440) % 1440;
+      const moonsetMin = (lunarTransitMin + 360) % 1440;
+      const isSpringTide = illum >= 85 || illum <= 15;
+      return { illum, isSpringTide, majors: [lunarTransitMin, underfootMin], minors: [moonriseMin, moonsetMin] };
+    }
+
+    function circularMinDiff(a, b) {
+      const diff = Math.abs(a - b) % 1440;
+      return Math.min(diff, 1440 - diff);
+    }
+
+    // Fallback Lunar-Harmonic Tide Turns
+    function generateFallbackTideTurns(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const baseMs = new Date(y, m - 1, d, 0, 0, 0).getTime();
+      const knownLowMs = new Date(2026, 10, 25, 17, 20, 0).getTime();
+      const halfCycleMs = 6.2103 * 3600 * 1000;
+      const turns = [];
+      const startScan = baseMs - 14 * 3600 * 1000;
+      const endScan = baseMs + 38 * 3600 * 1000;
+      const kStart = Math.floor((startScan - knownLowMs) / halfCycleMs);
+      const kEnd = Math.ceil((endScan - knownLowMs) / halfCycleMs);
+      for (let k = kStart; k <= kEnd; k++) {
+        const tMs = knownLowMs + k * halfCycleMs;
+        const type = Math.abs(k % 2) === 0 ? "L" : "H";
+        turns.push({ timeMs: tMs, type });
+      }
+      return turns;
+    }
+
+    // Adaptive Catch-Weighted Bias per Location
+    function getLocationBias(locId) {
+      const locLogs = state.logs.filter(l => l.locId === locId);
+      let inCatches = 0, inSessions = 0;
+      let outCatches = 0, outSessions = 0;
+      let totalFish = 0;
+
+      locLogs.forEach(entry => {
+        const qty = Number(entry.qty) || 0;
+        totalFish += qty;
+        if (entry.phase === "incoming") {
+          inSessions += 1;
+          inCatches += qty;
+        } else if (entry.phase === "outgoing") {
+          outSessions += 1;
+          outCatches += qty;
+        }
+      });
+
+      const inRate = (inCatches + 2.1) / (inSessions + 2);
+      const outRate = (outCatches + 1.9) / (outSessions + 2);
+      const ratio = inRate / outRate;
+      const inMult = Math.max(0.80, Math.min(1.20, Number((1 + (ratio - 1) * 0.25).toFixed(2))));
+      const outMult = Math.max(0.80, Math.min(1.20, Number((2 - inMult).toFixed(2))));
+      return { inMult, outMult, totalFish, totalLogs: locLogs.length };
+    }
+
+    // Compute Full 24h Model (5-min intervals = 288 slots)
+    function computeDayModel() {
+      const loc = getActiveLocation();
+      const [y, m, d] = state.dateStr.split("-").map(Number);
+      const dayStartMs = new Date(y, m - 1, d, 0, 0, 0).getTime();
+      const solar = getSolarTimes(state.dateStr, loc.lat, loc.lon);
+      const moon = getMoonPhaseAndWindows(state.dateStr, loc.lon);
+      const bias = getLocationBias(loc.id);
+
+      const turns = (state.tideEvents && state.tideEvents.length >= 2)
+        ? state.tideEvents
+        : generateFallbackTideTurns(state.dateStr);
+
+      const slots = [];
+
+      for (let min = 0; min < 1440; min += 5) {
+        const slotMs = dayStartMs + min * 60000;
+        const hourIdx = Math.floor(min / 60);
+        const drivers = [];
+
+        // Wind vector slack shift
+        let windShiftMin = 0;
+        if (state.windSeries && state.windSeries[hourIdx]) {
+          const w = state.windSeries[hourIdx];
+          const rad = ((w.dir - loc.axisDeg) * Math.PI) / 180;
+          const alongRiver = Math.cos(rad) * w.speed;
+          windShiftMin = Math.max(-25, Math.min(25, Math.round(alongRiver * 1.1)));
+        }
+
+        // 1. Tide Flow & Slack
+        let tidePts = 25;
+        let slackMult = 1.0;
+        let phase = "stillwater";
+        let phaseLabel = "Stillwater";
+        let tideCurveVal = 0.5;
+
+        if (loc.isTidal) {
+          const shiftedMs = slotMs - windShiftMin * 60000;
+          let prevTurn = turns[0];
+          let nextTurn = turns[turns.length - 1];
+          for (let i = 0; i < turns.length - 1; i++) {
+            if (turns[i].timeMs <= shiftedMs && turns[i + 1].timeMs >= shiftedMs) {
+              prevTurn = turns[i];
+              nextTurn = turns[i + 1];
+              break;
+            }
+          }
+
+          const span = Math.max(1, nextTurn.timeMs - prevTurn.timeMs);
+          const progress = Math.max(0, Math.min(1, (shiftedMs - prevTurn.timeMs) / span));
+          const flowStrength = Math.sin(progress * Math.PI);
+          const isIncoming = prevTurn.type === "L" && nextTurn.type === "H";
+          phase = isIncoming ? "incoming" : "outgoing";
+          tideCurveVal = isIncoming
+            ? 0.5 - 0.45 * Math.cos(progress * Math.PI)
+            : 0.5 + 0.45 * Math.cos(progress * Math.PI);
+
+          const minsFromPrev = Math.abs(shiftedMs - prevTurn.timeMs) / 60000;
+          const minsToNext = Math.abs(nextTurn.timeMs - shiftedMs) / 60000;
+          const nearestSlackMin = Math.min(minsFromPrev, minsToNext);
+
+          if (nearestSlackMin <= 45) {
+            slackMult = 0.55;
+            tidePts = Math.round(14 + flowStrength * 12);
+            phaseLabel = prevTurn.type === "L" && minsFromPrev <= 45 ? "Dead Low Slack"
+              : prevTurn.type === "H" && minsFromPrev <= 45 ? "Dead High Slack"
+              : nextTurn.type === "L" ? "Approaching Low Slack" : "Approaching High Slack";
+            drivers.push({ text: "-45% Dead Slack", cls: "driver-neg" });
+          } else {
+            const rawTide = 22 + flowStrength * 18 + (moon.isSpringTide ? 2 : 0);
+            const dirMult = isIncoming ? bias.inMult : bias.outMult;
+            tidePts = Math.min(42, Math.round(rawTide * dirMult));
+            phaseLabel = isIncoming ? "Incoming Tide" : "Outgoing Tide";
+            drivers.push({ text: `+${tidePts} ${phaseLabel}`, cls: "driver-pos" });
+            if (Math.abs(dirMult - 1) >= 0.02) {
+              const pct = Math.round((dirMult - 1) * 100);
+              drivers.push({
+                text: `${pct > 0 ? "+" : ""}${pct}% ${isIncoming ? "Incoming" : "Outgoing"} Bias`,
+                cls: pct > 0 ? "driver-pos" : "driver-neg"
+              });
+            }
+          }
+          if (Math.abs(windShiftMin) >= 6) {
+            drivers.push({
+              text: `${windShiftMin > 0 ? "+" : ""}${windShiftMin}m Wind Push`,
+              cls: "driver-gold"
+            });
+          }
+        } else {
+          drivers.push({ text: "+25 Stillwater Steady", cls: "driver-pos" });
+        }
+
+        // 2. Solunar Window (30 pts max)
+        const minMajorDiff = Math.min(...moon.majors.map(t => circularMinDiff(min, t)));
+        const minMinorDiff = Math.min(...moon.minors.map(t => circularMinDiff(min, t)));
+        let solunarPts = 10;
+        let solunarLabel = "Off-Solunar";
+        if (minMajorDiff <= 60) {
+          solunarPts = 30;
+          solunarLabel = "Major Solunar";
+          drivers.push({ text: "+30 Major Solunar", cls: "driver-gold" });
+        } else if (minMinorDiff <= 45) {
+          solunarPts = 21;
+          solunarLabel = "Minor Solunar";
+          drivers.push({ text: "+21 Minor Solunar", cls: "driver-gold" });
+        } else {
+          drivers.push({ text: "+10 Off-Solunar", cls: "" });
+        }
+
+        // 3. Light Transition (15 pts max)
+        const dawnDiff = circularMinDiff(min, solar.sunriseMin);
+        const duskDiff = circularMinDiff(min, solar.sunsetMin);
+        const isNight = min < solar.sunriseMin || min > solar.sunsetMin;
+        let lightPts = 4;
+        if (dawnDiff <= 50) {
+          lightPts = 15;
+          drivers.push({ text: "+15 Dawn Bite", cls: "driver-gold" });
+        } else if (duskDiff <= 55) {
+          lightPts = 15;
+          drivers.push({ text: "+15 Dusk Bite", cls: "driver-gold" });
+        } else if (isNight) {
+          lightPts = 10;
+          drivers.push({ text: "+10 Night Feed", cls: "driver-pos" });
+        } else {
+          drivers.push({ text: "+4 Midday", cls: "" });
+        }
+
+        // 4. Barometer Trend (15 pts max)
+        let baroPts = 12;
+        if (state.baroSeries && state.baroSeries[hourIdx] != null) {
+          const curP = state.baroSeries[hourIdx];
+          const prevP = state.baroSeries[Math.max(0, hourIdx - 3)];
+          const delta = curP - prevP;
+          if (delta <= -1.4) {
+            baroPts = 15;
+            drivers.push({ text: `+15 Dropping Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
+          } else if (delta > 3.0) {
+            baroPts = 3;
+            drivers.push({ text: `+3 Rising Lockjaw (${curP.toFixed(0)} hPa)`, cls: "driver-neg" });
+          } else if (delta > 1.4) {
+            baroPts = 8;
+            drivers.push({ text: `+8 Rising Baro (${curP.toFixed(0)} hPa)`, cls: "" });
+          } else {
+            baroPts = 12;
+            drivers.push({ text: `+12 Steady Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
+          }
+        } else {
+          drivers.push({ text: "+12 Steady Baro", cls: "driver-pos" });
+        }
+
+        // 5. USGS Water Temp & River Flow
+        let usgsPts = 0;
+        if (state.usgsData) {
+          const { tempF, cfs } = state.usgsData;
+          if (tempF != null) {
+            if (tempF >= 55 && tempF <= 78) usgsPts += 4;
+            else if (tempF < 48) usgsPts -= 3;
+          }
+          if (cfs != null) {
+            if (cfs >= 250 && cfs <= 1800) usgsPts += 3;
+            else if (cfs < 90) usgsPts -= 1;
+          }
+          if (usgsPts !== 0) {
+            const label = tempF != null ? `Water ${Math.round(tempF)}°F / Flow` : "River Flow";
+            drivers.push({
+              text: `${usgsPts > 0 ? "+" : ""}${usgsPts} ${label}`,
+              cls: usgsPts > 0 ? "driver-pos" : "driver-neg"
+            });
+          }
+        }
+
+        // 6. Confluence Bonus (+10 when strong current + solunar/low-light align)
+        let bonusPts = 0;
+        if (slackMult === 1.0 && tidePts >= 32 && (solunarPts >= 21 || lightPts >= 15)) {
+          bonusPts = 10;
+          drivers.push({ text: "+10 Confluence Bonus", cls: "driver-gold" });
+        }
+
+        const rawSum = tidePts + solunarPts + lightPts + baroPts + usgsPts + bonusPts;
+        const score = Math.max(0, Math.min(100, Math.round(Math.min(100, rawSum) * slackMult)));
+
+        slots.push({
+          min,
+          score,
+          phase,
+          phaseLabel,
+          slackMult,
+          tideCurveVal,
+          drivers,
+          solar,
+          moon
+        });
+      }
+
+      state.daySlots = slots;
+    }
+
+    function getTierInfo(score) {
+      if (score >= 85) return { label: "TROPHY FEED", color: "#fbbf24" };
+      if (score >= 65) return { label: "WHISKERS ACTIVE", color: "#2dd4bf" };
+      if (score >= 40) return { label: "PICKY BITE", color: "#38bdf8" };
+      return { label: "LOCKJAW / SLACK", color: "#f43f5e" };
+    }
+
+    function renderAll() {
+      const slotIdx = Math.max(0, Math.min(287, Math.round(state.minuteOfDay / 5)));
+      const slot = state.daySlots[slotIdx];
+      if (!slot) return;
+
+      const tier = getTierInfo(slot.score);
+      document.getElementById("heroScore").textContent = slot.score;
+      const tierEl = document.getElementById("heroTier");
+      tierEl.textContent = tier.label;
+      tierEl.style.color = tier.color;
+      tierEl.style.borderColor = tier.color + "55";
+
+      const circ = 490.09;
+      const gaugeEl = document.getElementById("gaugeProgress");
+      gaugeEl.style.strokeDashoffset = circ * (1 - slot.score / 100);
+      gaugeEl.style.stroke = tier.color;
+
+      document.getElementById("heroSubtitle").textContent = `${formatMinutes(slot.min)} · ${slot.phaseLabel}`;
+      document.getElementById("heroMeta").textContent =
+        `Moon ${slot.moon.illum}% · Rise ${formatMinutes(slot.solar.sunriseMin)} · Set ${formatMinutes(slot.solar.sunsetMin)}`;
+
+      const waveEl = document.getElementById("riverWaveStrip");
+      waveEl.classList.toggle("slack", slot.slackMult < 1 || slot.phase === "stillwater");
+
+      // Drivers
+      const driversWrap = document.getElementById("driversWrap");
+      driversWrap.innerHTML = slot.drivers
+        .map(d => `<span class="driver-pill ${d.cls}">${d.text}</span>`)
+        .join("");
+
+      // Timeline SVG
+      renderTimelineSvg(slotIdx);
+
+      // Top 3 Peak Windows (spaced at least 2.5 hrs apart)
+      const sorted = [...state.daySlots].sort((a, b) => b.score - a.score);
+      const peaks = [];
+      for (const cand of sorted) {
+        if (peaks.every(p => Math.abs(p.min - cand.min) >= 150)) {
+          peaks.push(cand);
+          if (peaks.length === 3) break;
+        }
+      }
+      peaks.sort((a, b) => a.min - b.min);
+      document.getElementById("peaksRow").innerHTML = peaks.map(p => {
+        const t = getTierInfo(p.score);
+        return `
+          <div class="peak-chip" data-min="${p.min}">
+            <div class="peak-time">${formatMinutes(p.min)}</div>
+            <div class="peak-score" style="color:${t.color}">${p.score} ${t.label.split(" ")[0]}</div>
+          </div>`;
+      }).join("");
+
+      document.querySelectorAll(".peak-chip").forEach(el => {
+        el.onclick = () => {
+          state.minuteOfDay = Number(el.dataset.min);
+          document.getElementById("timeSlider").value = state.minuteOfDay;
+          renderAll();
+        };
+      });
+
+      // Bias & Logs
+      const loc = getActiveLocation();
+      const bias = getLocationBias(loc.id);
+      document.getElementById("biasSummary").textContent =
+        `In ${bias.inMult.toFixed(2)}x · Out ${bias.outMult.toFixed(2)}x (${bias.totalFish} fish / ${bias.totalLogs} logs)`;
+
+      const recent = state.logs.filter(l => l.locId === loc.id).slice(-4).reverse();
+      document.getElementById("recentLogsWrap").innerHTML = recent.map(r => {
+        const label = r.qty > 0 ? `${r.qty} Catfish` : "Skunked";
+        return `<span class="log-tag">${label} · ${r.phase} (${r.time})</span>`;
+      }).join("");
+    }
+
+    function renderTimelineSvg(activeIdx) {
+      const svg = document.getElementById("timelineSvg");
+      const w = 360, h = 76;
+      const slots = state.daySlots;
+
+      // Slack shading bands
+      let bands = "";
+      slots.forEach((s, i) => {
+        if (s.slackMult < 1) {
+          const x = (i / 288) * w;
+          bands += `<rect x="${x.toFixed(1)}" y="0" width="${(w / 288 + 0.5).toFixed(1)}" height="${h}" fill="rgba(244,63,94,0.12)" />`;
+        }
+      });
+
+      // Tide wave dashed curve
+      const tidePts = slots.map((s, i) => {
+        const x = (i / 287) * w;
+        const y = h - 8 - s.tideCurveVal * (h - 18);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+
+      // Bite Score line
+      const scorePts = slots.map((s, i) => {
+        const x = (i / 287) * w;
+        const y = h - 6 - (s.score / 100) * (h - 14);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(" ");
+
+      const curX = (activeIdx / 287) * w;
+      const curY = h - 6 - (slots[activeIdx].score / 100) * (h - 14);
+
+      svg.innerHTML = `
+        ${bands}
+        <polyline fill="none" stroke="rgba(45,212,191,0.35)" stroke-width="1.5" stroke-dasharray="3,3" points="${tidePts}" />
+        <polyline fill="none" stroke="#fbbf24" stroke-width="2.2" points="${scorePts}" />
+        <line x1="${curX.toFixed(1)}" y1="0" x2="${curX.toFixed(1)}" y2="${h}" stroke="#f1f5f3" stroke-width="1.2" />
+        <circle cx="${curX.toFixed(1)}" cy="${curY.toFixed(1)}" r="4.5" fill="#fbbf24" stroke="#0a0f0e" stroke-width="1.5" />
+      `;
+    }
+
+    function renderLocationDropdown() {
+      const sel = document.getElementById("locationSelect");
+      let html = `<optgroup label="Preset Spots">`;
+      PRESETS.forEach(p => {
+        html += `<option value="${p.id}">${p.name}</option>`;
+      });
+      html += `</optgroup>`;
+      if (state.savedPins.length > 0) {
+        html += `<optgroup label="Saved Pins">`;
+        state.savedPins.forEach(p => {
+          html += `<option value="${p.id}">${p.name}</option>`;
+        });
+        html += `</optgroup>`;
+      }
+      sel.innerHTML = html;
+      sel.value = state.selectedLocId;
+      document.getElementById("pinCountBadge").textContent = state.savedPins.length;
+    }
+
+    // Live Data Fetching (NOAA CO-OPS, Open-Meteo, USGS)
+    async function fetchLiveFeeds() {
+      const loc = getActiveLocation();
+      const dot = document.getElementById("syncDot");
+      const label = document.getElementById("syncLabel");
+      dot.className = "sync-dot";
+      label.textContent = "SYNCING...";
+
+      const [y, m, d] = state.dateStr.split("-").map(Number);
+      const prevDay = new Date(y, m - 1, d - 1);
+      const nextDay = new Date(y, m - 1, d + 1);
+      const fmt = dt => `${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, "0")}${String(dt.getDate()).padStart(2, "0")}`;
+
+      const tasks = [];
+
+      // 1. NOAA Tides
+      if (loc.isTidal && loc.noaaStation) {
+        const noaaUrl = `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=predictions&application=CatfishBiteScore&begin_date=${fmt(prevDay)}&end_date=${fmt(nextDay)}&datum=MLLW&station=${loc.noaaStation}&time_zone=lst_ldt&units=english&interval=hilo&format=json`;
+        tasks.push(
+          fetchWithTimeout(noaaUrl, 4000)
+            .then(r => r.json())
+            .then(data => {
+              if (data && Array.isArray(data.predictions)) {
+                state.tideEvents = data.predictions.map(p => ({
+                  timeMs: new Date(p.t.replace(" ", "T")).getTime(),
+                  type: p.type
+                }));
+                return true;
+              }
+              return false;
+            })
+        );
+      } else {
+        state.tideEvents = [];
+      }
+
+      // 2. Open-Meteo Pressure & Wind
+      const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&hourly=pressure_msl,wind_speed_10m,wind_direction_10m&wind_speed_unit=mph&timezone=auto&start_date=${state.dateStr}&end_date=${state.dateStr}`;
+      tasks.push(
+        fetchWithTimeout(meteoUrl, 4000)
+          .then(r => r.json())
+          .then(data => {
+            if (data && data.hourly) {
+              state.baroSeries = data.hourly.pressure_msl || null;
+              if (data.hourly.wind_speed_10m && data.hourly.wind_direction_10m) {
+                state.windSeries = data.hourly.wind_speed_10m.map((spd, i) => ({
+                  speed: spd,
+                  dir: data.hourly.wind_direction_10m[i]
+                }));
+              }
+              return true;
+            }
+            return false;
+          })
+      );
+
+      // 3. USGS River Discharge & Water Temp
+      if (loc.usgsSite) {
+        const usgsUrl = `https://waterservices.usgs.gov/nwis/iv/?format=json&sites=${loc.usgsSite}&parameterCd=00060,00010&siteStatus=all`;
+        tasks.push(
+          fetchWithTimeout(usgsUrl, 4000)
+            .then(r => r.json())
+            .then(data => {
+              const ts = data?.value?.timeSeries || [];
+              let cfs = null, tempF = null;
+              ts.forEach(s => {
+                const code = s.variable?.variableCode?.[0]?.value;
+                const val = Number(s.values?.[0]?.value?.[0]?.value);
+                if (!Number.isNaN(val)) {
+                  if (code === "00060") cfs = val;
+                  if (code === "00010") tempF = (val * 9) / 5 + 32;
+                }
+              });
+              if (cfs != null || tempF != null) {
+                state.usgsData = { cfs, tempF };
+                return true;
+              }
+              return false;
+            })
+        );
+      }
+
+      const results = await Promise.allSettled(tasks);
+      const anyLive = results.some(r => r.status === "fulfilled" && r.value === true);
+      if (anyLive) {
+        dot.classList.add("live");
+        label.textContent = "LIVE FEEDS";
+      } else {
+        dot.classList.add("offline");
+        label.textContent = "LOCAL MODEL";
+      }
+
+      computeDayModel();
+      renderAll();
+    }
+
+    // Automatic Tidal vs. Stillwater Detection for Dropped Pins
+    async function detectWaterType(lat, lon) {
+      const badge = document.getElementById("autoDetectBadge");
+      badge.textContent = "Checking nearest NOAA station & elevation...";
+      let nearestStation = null;
+      let nearestMiles = 999;
+
+      try {
+        const res = await fetchWithTimeout("https://api.tidesandcurrents.noaa.gov/mdapi/prod/webapi/stations.json?type=tidepredictions", 4000);
+        const json = await res.json();
+        (json.stations || []).forEach(st => {
+          const dLat = (st.lat - lat) * 69;
+          const dLon = (st.lng - lon) * 55;
+          const miles = Math.hypot(dLat, dLon);
+          if (miles < nearestMiles) {
+            nearestMiles = miles;
+            nearestStation = st;
+          }
+        });
+      } catch {}
+
+      let elevFt = null;
+      try {
+        const elRes = await fetchWithTimeout(`https://api.open-meteo.com/v1/elevation?latitude=${lat}&longitude=${lon}`, 3500);
+        const elJson = await elRes.json();
+        if (elJson?.elevation?.[0] != null) elevFt = elJson.elevation[0] * 3.28084;
+      } catch {}
+
+      const isTidal = nearestStation && nearestMiles <= 18 && (elevFt == null || elevFt <= 35);
+      pendingPin = {
+        lat,
+        lon,
+        isTidal: Boolean(isTidal),
+        noaaStation: isTidal ? nearestStation.id : null,
+        usgsSite: "02042500",
+        axisDeg: 135
+      };
+
+      badge.textContent = isTidal
+        ? `Auto-detected: Tidal (${nearestStation.name}, ${nearestMiles.toFixed(1)} mi)`
+        : "Auto-detected: Stillwater / Inland";
+    }
+
+    function openDropPinModal() {
+      document.getElementById("dropPinModal").classList.add("open");
+      const active = getActiveLocation();
+      pendingPin.lat = active.lat;
+      pendingPin.lon = active.lon;
+      document.getElementById("pinCoordsText").textContent = `${active.lat.toFixed(4)}° N, ${Math.abs(active.lon).toFixed(4)}° W`;
+      detectWaterType(active.lat, active.lon);
+
+      setTimeout(() => {
+        if (typeof L !== "undefined") {
+          if (!mapInstance) {
+            mapInstance = L.map("pinMap").setView([active.lat, active.lon], 12);
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+              attribution: "&copy; OpenStreetMap"
+            }).addTo(mapInstance);
+            mapMarker = L.marker([active.lat, active.lon]).addTo(mapInstance);
+            mapInstance.on("click", e => {
+              const { lat, lng } = e.latlng;
+              mapMarker.setLatLng([lat, lng]);
+              document.getElementById("pinCoordsText").textContent = `${lat.toFixed(4)}° N, ${Math.abs(lng).toFixed(4)}° W`;
+              detectWaterType(lat, lng);
+            });
+          } else {
+            mapInstance.invalidateSize();
+            mapInstance.setView([active.lat, active.lon], 12);
+            mapMarker.setLatLng([active.lat, active.lon]);
+          }
+        }
+      }, 60);
+    }
+
+    function renderManagePinsList() {
+      const wrap = document.getElementById("savedPinsList");
+      if (state.savedPins.length === 0) {
+        wrap.innerHTML = `<div class="hero-meta" style="padding:12px 0;">No custom pins saved yet. Tap "Drop Pin" to add one.</div>`;
+        return;
+      }
+      wrap.innerHTML = state.savedPins.map(pin => `
+        <div class="pin-item">
+          <div class="pin-item-info" data-select-id="${pin.id}">
+            <div class="pin-item-name">${pin.name}</div>
+            <div class="pin-item-sub">${pin.lat.toFixed(4)}, ${pin.lon.toFixed(4)} · ${pin.isTidal ? "Tidal" : "Stillwater"}</div>
+          </div>
+          <button class="btn" data-rename-id="${pin.id}" title="Rename">✎</button>
+          <button class="btn" data-delete-id="${pin.id}" title="Delete" style="color:#fda4af;">✕</button>
+        </div>
+      `).join("");
+
+      wrap.querySelectorAll("[data-select-id]").forEach(el => {
+        el.onclick = () => {
+          state.selectedLocId = el.dataset.selectId;
+          renderLocationDropdown();
+          document.getElementById("managePinsModal").classList.remove("open");
+          computeDayModel();
+          renderAll();
+          fetchLiveFeeds();
+        };
+      });
+
+      wrap.querySelectorAll("[data-rename-id]").forEach(el => {
+        el.onclick = () => {
+          const pin = state.savedPins.find(p => p.id === el.dataset.renameId);
+          if (!pin) return;
+          const nextName = prompt("Rename fishing spot:", pin.name);
+          if (nextName && nextName.trim()) {
+            pin.name = nextName.trim();
+            saveSavedPins();
+            renderLocationDropdown();
+            renderManagePinsList();
+          }
+        };
+      });
+
+      wrap.querySelectorAll("[data-delete-id]").forEach(el => {
+        el.onclick = () => {
+          const id = el.dataset.deleteId;
+          state.savedPins = state.savedPins.filter(p => p.id !== id);
+          if (state.selectedLocId === id) state.selectedLocId = "ferry_point";
+          saveSavedPins();
+          renderLocationDropdown();
+          renderManagePinsList();
+          computeDayModel();
+          renderAll();
+        };
+      });
+    }
+
+    // Wire Events
+    document.addEventListener("DOMContentLoaded", () => {
+      renderLocationDropdown();
+      const datePicker = document.getElementById("datePicker");
+      datePicker.value = state.dateStr;
+
+      const slider = document.getElementById("timeSlider");
+      slider.value = state.minuteOfDay;
+
+      computeDayModel();
+      renderAll();
+      fetchLiveFeeds();
+
+      document.getElementById("locationSelect").onchange = e => {
+        state.selectedLocId = e.target.value;
+        computeDayModel();
+        renderAll();
+        fetchLiveFeeds();
+      };
+
+      datePicker.onchange = e => {
+        if (e.target.value) {
+          state.dateStr = e.target.value;
+          computeDayModel();
+          renderAll();
+          fetchLiveFeeds();
+        }
+      };
+
+      document.getElementById("nowBtn").onclick = () => {
+        const now = new Date();
+        state.dateStr = toLocalDateInput(now);
+        datePicker.value = state.dateStr;
+        state.minuteOfDay = now.getHours() * 60 + Math.floor(now.getMinutes() / 5) * 5;
+        slider.value = state.minuteOfDay;
+        computeDayModel();
+        renderAll();
+        fetchLiveFeeds();
+      };
+
+      document.getElementById("refreshBtn").onclick = fetchLiveFeeds;
+      document.getElementById("syncBtn").onclick = fetchLiveFeeds;
+
+      slider.oninput = e => {
+        state.minuteOfDay = Number(e.target.value);
+        renderAll();
+      };
+
+      const svg = document.getElementById("timelineSvg");
+      const scrubFromPointer = clientX => {
+        const rect = svg.getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        state.minuteOfDay = Math.round((ratio * 1435) / 5) * 5;
+        slider.value = state.minuteOfDay;
+        renderAll();
+      };
+      svg.addEventListener("pointerdown", e => {
+        svg.setPointerCapture(e.pointerId);
+        scrubFromPointer(e.clientX);
+      });
+      svg.addEventListener("pointermove", e => {
+        if (e.buttons === 1) scrubFromPointer(e.clientX);
+      });
+
+      // Catch Qty & Logging
+      document.getElementById("qtyMinusBtn").onclick = () => {
+        state.catchQty = Math.max(1, state.catchQty - 1);
+        document.getElementById("catchQtyVal").textContent = state.catchQty;
+      };
+      document.getElementById("qtyPlusBtn").onclick = () => {
+        state.catchQty = Math.min(99, state.catchQty + 1);
+        document.getElementById("catchQtyVal").textContent = state.catchQty;
+      };
+
+      document.getElementById("logBiteBtn").onclick = () => {
+        const loc = getActiveLocation();
+        const slot = state.daySlots[Math.round(state.minuteOfDay / 5)];
+        state.logs.push({
+          locId: loc.id,
+          date: state.dateStr,
+          time: formatMinutes(state.minuteOfDay),
+          phase: slot.phase,
+          qty: state.catchQty
+        });
+        saveLogs();
+        computeDayModel();
+        renderAll();
+        showToast(`Logged ${state.catchQty} catfish (${slot.phaseLabel})`);
+        state.catchQty = 1;
+        document.getElementById("catchQtyVal").textContent = "1";
+      };
+
+      document.getElementById("logSkunkBtn").onclick = () => {
+        const loc = getActiveLocation();
+        const slot = state.daySlots[Math.round(state.minuteOfDay / 5)];
+        state.logs.push({
+          locId: loc.id,
+          date: state.dateStr,
+          time: formatMinutes(state.minuteOfDay),
+          phase: slot.phase,
+          qty: 0
+        });
+        saveLogs();
+        computeDayModel();
+        renderAll();
+        showToast(`Logged skunked session (${slot.phaseLabel})`);
+      };
+
+      document.getElementById("resetLogsBtn").onclick = () => {
+        const loc = getActiveLocation();
+        state.logs = state.logs.filter(l => l.locId !== loc.id);
+        saveLogs();
+        computeDayModel();
+        renderAll();
+        showToast("Cleared logs for this spot");
+      };
+
+      // Modals
+      document.getElementById("openDropPinBtn").onclick = openDropPinModal;
+      document.getElementById("closeDropPinBtn").onclick = () =>
+        document.getElementById("dropPinModal").classList.remove("open");
+
+      document.getElementById("savePinBtn").onclick = () => {
+        const rawName = document.getElementById("pinNameInput").value.trim();
+        const name = rawName || `Pin (${pendingPin.lat.toFixed(3)}, ${pendingPin.lon.toFixed(3)})`;
+        const newPin = {
+          id: "pin_" + Date.now(),
+          name,
+          lat: pendingPin.lat,
+          lon: pendingPin.lon,
+          isTidal: pendingPin.isTidal,
+          noaaStation: pendingPin.noaaStation,
+          usgsSite: pendingPin.usgsSite,
+          axisDeg: pendingPin.axisDeg
+        };
+        state.savedPins.push(newPin);
+        saveSavedPins();
+        state.selectedLocId = newPin.id;
+        document.getElementById("pinNameInput").value = "";
+        renderLocationDropdown();
+        document.getElementById("dropPinModal").classList.remove("open");
+        computeDayModel();
+        renderAll();
+        fetchLiveFeeds();
+        showToast(`Saved "${name}"`);
+      };
+
+      document.getElementById("openManagePinsBtn").onclick = () => {
+        renderManagePinsList();
+        document.getElementById("managePinsModal").classList.add("open");
+      };
+      document.getElementById("closeManagePinsBtn").onclick = () =>
+        document.getElementById("managePinsModal").classList.remove("open");
+    });
+  </script>
+</body>
+</html>
