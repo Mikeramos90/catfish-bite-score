@@ -1067,6 +1067,7 @@
       const loc = getActiveLocation();
       const [y, m, d] = state.dateStr.split("-").map(Number);
       const dayStartMs = new Date(y, m - 1, d, 0, 0, 0).getTime();
+      const month = m; // 1..12 for seasonal cold/late-fall reality check
       const solar = getSolarTimes(state.dateStr, loc.lat, loc.lon);
       const moon = getMoonPhaseAndWindows(state.dateStr, loc.lon);
       const bias = getLocationBias(loc.id);
@@ -1074,6 +1075,10 @@
       const turns = (state.tideEvents && state.tideEvents.length >= 2)
         ? state.tideEvents
         : generateFallbackTideTurns(state.dateStr);
+
+      // Late fall / winter cooldown factor (Nov, Dec, Jan, Feb)
+      const isLateFallWinter = month === 11 || month === 12 || month === 1 || month === 2;
+      const isEarlySpringShoulder = month === 3 || month === 10;
 
       const slots = [];
 
@@ -1091,8 +1096,8 @@
           windShiftMin = Math.max(-25, Math.min(25, Math.round(alongRiver * 1.1)));
         }
 
-        // 1. Scent-Chute Current & Tide Flow + Log Calibration
-        let tidePts = 28;
+        // 1. Scent-Chute Current & Tide Flow + Log Calibration (Balanced so 5/5 requires true alignment)
+        let tidePts = 22;
         let slackMult = 1.0;
         let phase = "stillwater";
         let phaseLabel = "Stillwater";
@@ -1125,18 +1130,18 @@
           const nearestSlackMin = Math.min(minsFromPrev, minsToNext);
 
           if (nearestSlackMin <= 40) {
-            slackMult = 0.55;
-            tidePts = Math.round(13 + flowStrength * 10);
+            slackMult = 0.52;
+            tidePts = Math.round(10 + flowStrength * 8);
             phaseLabel = prevTurn.type === "L" && minsFromPrev <= 40 ? "Dead Low Slack"
               : prevTurn.type === "H" && minsFromPrev <= 40 ? "Dead High Slack"
               : nextTurn.type === "L" ? "Approaching Low Slack" : "Approaching High Slack";
-            drivers.push({ text: "-45% Scent Stall (Slack)", cls: "driver-neg" });
+            drivers.push({ text: "-48% Scent Stall (Slack)", cls: "driver-neg" });
           } else {
-            const springBonus = moon.isSpringTide ? 3 : 0;
-            const rawTide = 23 + flowStrength * 18 + springBonus;
+            const springBonus = moon.isSpringTide ? 2 : 0;
+            const rawTide = 18 + flowStrength * 14 + springBonus;
             const dirMult = isIncoming ? bias.inMult : bias.outMult;
-            tidePts = Math.min(42, Math.round(rawTide * dirMult));
-            strongCurrent = flowStrength >= 0.68;
+            tidePts = Math.min(34, Math.round(rawTide * dirMult));
+            strongCurrent = flowStrength >= 0.72;
             phaseLabel = isIncoming ? "Incoming Scent Flow" : "Outgoing Scent Flow";
             drivers.push({ text: `+${tidePts} ${phaseLabel}`, cls: "driver-pos" });
             if (Math.abs(dirMult - 1) >= 0.02) {
@@ -1147,123 +1152,144 @@
               });
             }
           }
-          if (Math.abs(windShiftMin) >= 6) {
+          if (Math.abs(windShiftMin) >= 8) {
             drivers.push({
-              text: `${windShiftMin > 0 ? "+" : ""}${windShiftMin}m Wind Push`,
+              text: `${windShiftMin > 0 ? "+" : ""}${windShiftMin}m Wind Shift`,
               cls: "driver-gold"
             });
           }
         } else {
+          // Stillwater impoundment: realistic baseline (no river cfs scent-line credit)
           let windDriftPts = 0;
           if (state.windSeries && state.windSeries[hourIdx]) {
             const spd = state.windSeries[hourIdx].speed;
-            if (spd >= 7 && spd <= 18) {
-              windDriftPts = 5;
-              drivers.push({ text: `+5 Wind Scent Drift (${Math.round(spd)} mph)`, cls: "driver-pos" });
+            if (spd >= 8 && spd <= 16) {
+              windDriftPts = 3;
+              drivers.push({ text: `+3 Light Wind Drift (${Math.round(spd)} mph)`, cls: "driver-pos" });
+            } else if (spd > 18) {
+              windDriftPts = -2;
+              drivers.push({ text: `-2 Choppy Wind (${Math.round(spd)} mph)`, cls: "driver-neg" });
             }
           }
-          tidePts = 27 + windDriftPts;
-          drivers.push({ text: "+27 Stillwater Ledge", cls: "driver-pos" });
+          tidePts = (isLateFallWinter ? 18 : 22) + windDriftPts;
+          drivers.push({
+            text: isLateFallWinter ? `+${tidePts} Cold Stillwater` : `+${tidePts} Stillwater Ledge`,
+            cls: isLateFallWinter ? "" : "driver-pos"
+          });
         }
 
-        // 2. Barometric Pressure Trend (Pre-Front Catfish Trigger, up to 20 pts)
-        let baroPts = 13;
+        // 2. Barometric Pressure Trend (Pre-Front Catfish Trigger, up to 15 pts)
+        let baroPts = 9;
         let preFrontSurge = false;
         if (state.baroSeries && state.baroSeries[hourIdx] != null) {
           const curP = state.baroSeries[hourIdx];
           const prevP = state.baroSeries[Math.max(0, hourIdx - 3)];
           const delta = curP - prevP;
           if (delta <= -1.5) {
-            baroPts = 20;
+            baroPts = 15;
             preFrontSurge = true;
-            drivers.push({ text: `+20 Pre-Front Drop (${curP.toFixed(0)} hPa)`, cls: "driver-gold" });
+            drivers.push({ text: `+15 Pre-Front Drop (${curP.toFixed(0)} hPa)`, cls: "driver-gold" });
           } else if (delta < -0.5) {
-            baroPts = 16;
-            drivers.push({ text: `+16 Falling Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
+            baroPts = 12;
+            drivers.push({ text: `+12 Falling Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
           } else if (delta > 2.8) {
-            baroPts = 4;
-            drivers.push({ text: `+4 Post-Front Spike (${curP.toFixed(0)} hPa)`, cls: "driver-neg" });
+            baroPts = 2;
+            drivers.push({ text: `+2 Post-Front Spike (${curP.toFixed(0)} hPa)`, cls: "driver-neg" });
           } else if (delta > 1.2) {
-            baroPts = 9;
-            drivers.push({ text: `+9 Rising Baro (${curP.toFixed(0)} hPa)`, cls: "" });
+            baroPts = 6;
+            drivers.push({ text: `+6 Rising Baro (${curP.toFixed(0)} hPa)`, cls: "" });
           } else {
-            baroPts = 13;
-            drivers.push({ text: `+13 Steady Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
+            baroPts = 9;
+            drivers.push({ text: `+9 Steady Baro (${curP.toFixed(0)} hPa)`, cls: "driver-pos" });
           }
         } else {
-          drivers.push({ text: "+13 Steady Baro", cls: "driver-pos" });
+          drivers.push({ text: "+9 Steady Baro", cls: "driver-pos" });
         }
 
-        // 3. Low-Light & Nocturnal Feeding Window (up to 16 pts)
+        // 3. Low-Light & Nocturnal Feeding Window (up to 13 pts)
         const dawnDiff = circularMinDiff(min, solar.sunriseMin);
         const duskDiff = circularMinDiff(min, solar.sunsetMin);
         const isNight = min < solar.sunriseMin || min > solar.sunsetMin;
-        let lightPts = 5;
-        if (dawnDiff <= 55) {
-          lightPts = 16;
-          drivers.push({ text: "+16 Dawn Prowl", cls: "driver-gold" });
-        } else if (duskDiff <= 60) {
-          lightPts = 16;
-          drivers.push({ text: "+16 Dusk Prowl", cls: "driver-gold" });
-        } else if (isNight) {
+        let lightPts = 3;
+        if (dawnDiff <= 50) {
           lightPts = 13;
-          drivers.push({ text: "+13 Night Bottom Feed", cls: "driver-pos" });
+          drivers.push({ text: "+13 Dawn Window", cls: "driver-gold" });
+        } else if (duskDiff <= 55) {
+          lightPts = 13;
+          drivers.push({ text: "+13 Dusk Window", cls: "driver-gold" });
+        } else if (isNight) {
+          lightPts = 10;
+          drivers.push({ text: "+10 Night Feed", cls: "driver-pos" });
         } else {
-          drivers.push({ text: "+5 Midday Deep Hold", cls: "" });
+          drivers.push({ text: "+3 Midday", cls: "" });
         }
 
-        // 4. Solunar Transit Window (up to 21 pts)
+        // 4. Solunar Transit Window (Modest modifier so minor windows don't inflate scores)
         const minMajorDiff = Math.min(...moon.majors.map(t => circularMinDiff(min, t)));
         const minMinorDiff = Math.min(...moon.minors.map(t => circularMinDiff(min, t)));
-        let solunarPts = 7;
+        let solunarPts = 4;
         if (minMajorDiff <= 60) {
-          solunarPts = 21;
-          drivers.push({ text: "+21 Major Solunar", cls: "driver-gold" });
+          solunarPts = 14;
+          drivers.push({ text: "+14 Major Solunar", cls: "driver-gold" });
         } else if (minMinorDiff <= 45) {
-          solunarPts = 15;
-          drivers.push({ text: "+15 Minor Solunar", cls: "driver-gold" });
+          solunarPts = 8;
+          drivers.push({ text: "+8 Minor Solunar", cls: "" });
         } else {
-          drivers.push({ text: "+7 Off-Solunar", cls: "" });
+          drivers.push({ text: "+4 Off-Solunar", cls: "" });
         }
 
-        // 5. Water Temp & River Scent Flow (USGS)
+        // 5. Water Temp & Flow (USGS: flow only applied on tidal/river spots, not stillwater)
         let usgsPts = 0;
         if (state.usgsData) {
           const { tempF, cfs } = state.usgsData;
           if (tempF != null) {
-            if (tempF >= 50 && tempF <= 78) {
-              usgsPts += 5;
-              drivers.push({ text: `+5 Prime Water Temp (${Math.round(tempF)}°F)`, cls: "driver-pos" });
+            if (tempF >= 62 && tempF <= 80) {
+              usgsPts += 4;
+              drivers.push({ text: `+4 Warm Water (${Math.round(tempF)}°F)`, cls: "driver-pos" });
+            } else if (tempF >= 48 && tempF < 62) {
+              const adj = isLateFallWinter ? 1 : 2;
+              usgsPts += adj;
+              drivers.push({ text: `+${adj} Cool Water (${Math.round(tempF)}°F)`, cls: "" });
             } else if (tempF < 42) {
-              usgsPts -= 4;
-              drivers.push({ text: `-4 Cold Water (${Math.round(tempF)}°F)`, cls: "driver-neg" });
+              usgsPts -= 5;
+              drivers.push({ text: `-5 Cold Water (${Math.round(tempF)}°F)`, cls: "driver-neg" });
             } else {
-              usgsPts += 1;
-              drivers.push({ text: `+1 Water Temp (${Math.round(tempF)}°F)`, cls: "" });
+              usgsPts -= 2;
+              drivers.push({ text: `-2 Chilly Water (${Math.round(tempF)}°F)`, cls: "driver-neg" });
             }
           }
-          if (cfs != null) {
-            if (cfs >= 250 && cfs <= 2200) {
-              usgsPts += 4;
-              drivers.push({ text: `+4 Active Scent Flow (${Math.round(cfs)} cfs)`, cls: "driver-pos" });
-            } else if (cfs > 2200 && cfs <= 4500) {
+          if (loc.isTidal && cfs != null) {
+            if (cfs >= 300 && cfs <= 2200) {
               usgsPts += 3;
-              drivers.push({ text: `+3 Mudline Scent Wash (${Math.round(cfs)} cfs)`, cls: "driver-gold" });
+              drivers.push({ text: `+3 River Flow (${Math.round(cfs)} cfs)`, cls: "driver-pos" });
+            } else if (cfs > 2200 && cfs <= 4500) {
+              usgsPts += 2;
+              drivers.push({ text: `+2 High Flow (${Math.round(cfs)} cfs)`, cls: "" });
             } else if (cfs < 100) {
               usgsPts -= 2;
-              drivers.push({ text: `-2 Low Stagnant Flow`, cls: "driver-neg" });
+              drivers.push({ text: `-2 Low Flow`, cls: "driver-neg" });
             }
           }
         }
 
-        // 6. Confluence Bonus (+8 when moving scent chute aligns with pre-front drop, low-light, or major solunar)
-        let bonusPts = 0;
-        if (slackMult === 1.0 && (strongCurrent || !loc.isTidal) && (preFrontSurge || lightPts >= 13 || solunarPts >= 21)) {
-          bonusPts = 8;
-          drivers.push({ text: "+8 Scent-Chute Confluence", cls: "driver-gold" });
+        // 6. Late-fall / winter seasonal metabolism adjustment (-6 in Nov-Feb, -2 in Mar/Oct)
+        let seasonPts = 0;
+        if (isLateFallWinter) {
+          seasonPts = -6;
+          drivers.push({ text: "-6 Late-Fall Pace", cls: "driver-neg" });
+        } else if (isEarlySpringShoulder) {
+          seasonPts = -2;
+          drivers.push({ text: "-2 Shoulder Pace", cls: "" });
         }
 
-        const rawSum = tidePts + baroPts + lightPts + solunarPts + usgsPts + bonusPts;
+        // 7. True Peak Confluence Bonus (+6 only when strong current + pre-front drop + low-light/major solunar align)
+        let bonusPts = 0;
+        if (slackMult === 1.0 && strongCurrent && preFrontSurge && (lightPts >= 13 || solunarPts >= 14)) {
+          bonusPts = 6;
+          drivers.push({ text: "+6 Peak Confluence", cls: "driver-gold" });
+        }
+
+        const rawSum = tidePts + baroPts + lightPts + solunarPts + usgsPts + seasonPts + bonusPts;
         const score = Math.max(0, Math.min(100, Math.round(Math.min(100, rawSum) * slackMult)));
 
         slots.push({
