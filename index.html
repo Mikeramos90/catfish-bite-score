@@ -142,15 +142,22 @@
 
     .sub-controls {
       display: grid;
-      grid-template-columns: 1fr auto auto auto;
+      grid-template-columns: 1fr auto auto;
       gap: 6px;
       align-items: center;
     }
 
     .btn-ff4 {
-      background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(239, 181, 71, 0.2));
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.22), rgba(239, 181, 71, 0.18));
       border-color: rgba(46, 204, 113, 0.55);
-      color: #a8f0c6;
+      color: #b8f5d0;
     }
 
     .badge-count {
@@ -759,16 +766,16 @@
       <button id="openManagePinsBtn" class="btn">Pins <span id="pinCountBadge" class="badge-count">0</span></button>
     </div>
 
-    <!-- Date, NOW & Next 4+ Jump -->
+    <!-- Date & NOW Jump -->
     <div class="sub-controls">
       <input type="date" id="datePicker" aria-label="Select date" />
       <button id="nowBtn" class="btn">NOW</button>
-      <button id="nextFourBtn" class="btn btn-ff4" title="Fast forward to next 4+ catfish bite window">⏩ 4+</button>
       <button id="refreshBtn" class="btn" title="Refresh feeds">↻</button>
     </div>
 
     <!-- Hero Bite Score Card -->
     <div class="card hero-card">
+      <button type="button" id="nextFourBtn" class="btn btn-ff4" title="Jump to next 4+ catfish window across upcoming dates">⏩ Next 4+ Catfish Window</button>
       <div class="rating-stage" aria-label="1 to 5 catfish bite rating">
         <div class="rating-top-bar">
           <span id="catfishScaleLabel" class="rating-title">0.00 / 5 Catfish</span>
@@ -1777,35 +1784,172 @@
         fetchLiveFeeds();
       };
 
-      document.getElementById("nextFourBtn").onclick = () => {
-        if (!state.daySlots || state.daySlots.length === 0) return;
-        const curIdx = Math.max(0, Math.min(287, Math.round(state.minuteOfDay / 5)));
+      function evaluateScoreForDateMinute(targetDateStr, min) {
+        const loc = getActiveLocation();
+        const [ty, tm, td] = targetDateStr.split("-").map(Number);
+        const dayStartMs = new Date(ty, tm - 1, td, 0, 0, 0).getTime();
+        const slotMs = dayStartMs + min * 60000;
+        const hourIdx = Math.floor(min / 60);
+        const solar = getSolarTimes(targetDateStr, loc.lat, loc.lon);
+        const moon = getMoonPhaseAndWindows(targetDateStr, loc.lon);
+        const bias = getLocationBias(loc.id);
+        const isLateFallWinter = tm === 11 || tm === 12 || tm === 1 || tm === 2;
+        const isShoulder = tm === 3 || tm === 4 || tm === 9 || tm === 10;
 
-        // Look ahead for the next 4.00+ catfish rating window (score >= 80)
-        let target = state.daySlots.slice(curIdx + 1).find(s => s.score >= 80);
-        // If none ahead today, check earlier slots today as well
-        if (!target) {
-          target = state.daySlots.find(s => s.score >= 80);
+        let windShiftMin = 0;
+        if (state.windSeries && state.windSeries[hourIdx]) {
+          const w = state.windSeries[hourIdx];
+          const rad = ((w.dir - loc.axisDeg) * Math.PI) / 180;
+          windShiftMin = Math.max(-25, Math.min(25, Math.round(Math.cos(rad) * w.speed * 1.1)));
         }
 
-        if (target) {
-          state.minuteOfDay = target.min;
-          slider.value = state.minuteOfDay;
-          renderAll();
-          const fishVal = (Math.round((target.score / 20) * 4) / 4).toFixed(2).replace(/\.00$/, "");
-          showToast(`Next 4+ window: ${formatMinutes(target.min)} (${fishVal} / 5 Fish)`);
-        } else {
-          // Otherwise jump to best upcoming window on the day and report its rating
-          const upcoming = state.daySlots.slice(curIdx + 1);
-          const pool = upcoming.length > 0 ? upcoming : state.daySlots;
-          const best = [...pool].sort((a, b) => b.score - a.score)[0];
-          if (best) {
-            state.minuteOfDay = best.min;
-            slider.value = state.minuteOfDay;
-            renderAll();
-            const bestFish = (Math.round((best.score / 20) * 4) / 4).toFixed(2).replace(/\.00$/, "");
-            showToast(`No 4+ today · Best window: ${formatMinutes(best.min)} (${bestFish} / 5 Fish)`);
+        let tidePts = 26;
+        let slackMult = 1.0;
+        let strongCurrent = false;
+
+        if (loc.isTidal) {
+          const turns = (state.tideEvents && state.tideEvents.length >= 2)
+            ? state.tideEvents
+            : generateFallbackTideTurns(targetDateStr);
+          const shiftedMs = slotMs - windShiftMin * 60000;
+          let prevTurn = turns[0];
+          let nextTurn = turns[turns.length - 1];
+          for (let i = 0; i < turns.length - 1; i++) {
+            if (turns[i].timeMs <= shiftedMs && turns[i + 1].timeMs >= shiftedMs) {
+              prevTurn = turns[i];
+              nextTurn = turns[i + 1];
+              break;
+            }
           }
+          const span = Math.max(1, nextTurn.timeMs - prevTurn.timeMs);
+          const progress = Math.max(0, Math.min(1, (shiftedMs - prevTurn.timeMs) / span));
+          const flowStrength = Math.sin(progress * Math.PI);
+          const isIncoming = prevTurn.type === "L" && nextTurn.type === "H";
+          const nearestSlackMin = Math.min(
+            Math.abs(shiftedMs - prevTurn.timeMs) / 60000,
+            Math.abs(nextTurn.timeMs - shiftedMs) / 60000
+          );
+          if (nearestSlackMin <= 35) {
+            slackMult = 0.62;
+            tidePts = Math.round(14 + flowStrength * 10);
+          } else {
+            const springBonus = moon.isSpringTide ? 3 : 0;
+            const dirMult = isIncoming ? bias.inMult : bias.outMult;
+            tidePts = Math.min(40, Math.round((23 + flowStrength * 15 + springBonus) * dirMult));
+            strongCurrent = flowStrength >= 0.65;
+          }
+        } else {
+          let windDriftPts = 0;
+          if (state.windSeries && state.windSeries[hourIdx]) {
+            const spd = state.windSeries[hourIdx].speed;
+            if (spd >= 7 && spd <= 17) windDriftPts = 4;
+            else if (spd > 19) windDriftPts = -2;
+          }
+          tidePts = (isLateFallWinter ? 22 : 26) + windDriftPts;
+        }
+
+        let baroPts = 11;
+        let preFrontSurge = false;
+        if (state.baroSeries && state.baroSeries[hourIdx] != null) {
+          const curP = state.baroSeries[hourIdx];
+          const prevP = state.baroSeries[Math.max(0, hourIdx - 3)];
+          const delta = curP - prevP;
+          if (delta <= -1.4) { baroPts = 17; preFrontSurge = true; }
+          else if (delta < -0.4) baroPts = 14;
+          else if (delta > 3.0) baroPts = 5;
+          else if (delta > 1.3) baroPts = 9;
+        }
+
+        const dawnDiff = circularMinDiff(min, solar.sunriseMin);
+        const duskDiff = circularMinDiff(min, solar.sunsetMin);
+        const isNight = min < solar.sunriseMin || min > solar.sunsetMin;
+        let lightPts = 5;
+        if (dawnDiff <= 55 || duskDiff <= 60) lightPts = 15;
+        else if (isNight) lightPts = 12;
+
+        const minMajorDiff = Math.min(...moon.majors.map(t => circularMinDiff(min, t)));
+        const minMinorDiff = Math.min(...moon.minors.map(t => circularMinDiff(min, t)));
+        let solunarPts = 6;
+        if (minMajorDiff <= 60) solunarPts = 16;
+        else if (minMinorDiff <= 45) solunarPts = 10;
+
+        let usgsPts = 0;
+        if (state.usgsData) {
+          const { tempF, cfs } = state.usgsData;
+          if (tempF != null) {
+            if (tempF >= 52 && tempF <= 80) usgsPts += 5;
+            else if (tempF >= 44 && tempF < 52) usgsPts += 2;
+            else if (tempF < 44) usgsPts -= 3;
+            else usgsPts -= 1;
+          }
+          if (loc.isTidal && cfs != null) {
+            if (cfs >= 250 && cfs <= 2500) usgsPts += 4;
+            else if (cfs > 2500 && cfs <= 4500) usgsPts += 2;
+            else if (cfs < 100) usgsPts -= 2;
+          }
+        }
+
+        const seasonPts = isLateFallWinter ? -2 : (isShoulder ? -1 : 0);
+        let bonusPts = 0;
+        if (slackMult === 1.0 && (strongCurrent || !loc.isTidal) && (preFrontSurge || lightPts >= 12 || solunarPts >= 16)) {
+          bonusPts = 7;
+        }
+
+        const rawSum = tidePts + baroPts + lightPts + solunarPts + usgsPts + seasonPts + bonusPts;
+        return Math.max(0, Math.min(100, Math.round(Math.min(100, rawSum) * slackMult)));
+      }
+
+      document.getElementById("nextFourBtn").onclick = () => {
+        const [sy, sm, sd] = state.dateStr.split("-").map(Number);
+        const startDay = new Date(sy, sm - 1, sd);
+        const curMin = state.minuteOfDay;
+
+        let found = null;
+        let bestOverall = null;
+
+        for (let dayOffset = 0; dayOffset <= 30; dayOffset++) {
+          const dt = new Date(sy, sm - 1, sd + dayOffset);
+          const dStr = toLocalDateInput(dt);
+          const startMin = dayOffset === 0 ? curMin + 5 : 0;
+
+          for (let min = startMin; min < 1440; min += 5) {
+            const sc = evaluateScoreForDateMinute(dStr, min);
+            if (!bestOverall || sc > bestOverall.score) {
+              bestOverall = { dateStr: dStr, min, score: sc };
+            }
+            if (sc >= 80) {
+              found = { dateStr: dStr, min, score: sc };
+              break;
+            }
+          }
+          if (found) break;
+        }
+
+        const target = found || bestOverall;
+        if (!target) return;
+
+        const dateChanged = target.dateStr !== state.dateStr;
+        state.dateStr = target.dateStr;
+        state.minuteOfDay = target.min;
+        datePicker.value = state.dateStr;
+        slider.value = state.minuteOfDay;
+
+        const fishVal = (Math.round((target.score / 20) * 4) / 4).toFixed(2).replace(/\.00$/, "");
+        const dateLabel = target.dateStr === toLocalDateInput(new Date()) ? "Today" : target.dateStr;
+
+        if (dateChanged) {
+          computeDayModel();
+          renderAll();
+          fetchLiveFeeds();
+        } else {
+          computeDayModel();
+          renderAll();
+        }
+
+        if (found) {
+          showToast(`Next 4+ window: ${dateLabel} ${formatMinutes(target.min)} (${fishVal} / 5 Fish)`);
+        } else {
+          showToast(`Best upcoming (${dateLabel}): ${formatMinutes(target.min)} (${fishVal} / 5 Fish)`);
         }
       };
 
