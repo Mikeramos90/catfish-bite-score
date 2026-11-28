@@ -899,12 +899,6 @@
       </svg>
     </div>
 
-    <!-- Score Drivers (+/- Pills) -->
-    <div class="card">
-      <div class="section-label">Score Drivers</div>
-      <div id="driversWrap" class="drivers-wrap"></div>
-    </div>
-
     <!-- Multi-Catch Bite Calibration Logger -->
     <div class="card">
       <div class="log-header">
@@ -1305,22 +1299,48 @@
           drivers.push({ text: "+11 Steady Baro", cls: "driver-pos" });
         }
 
-        // 3. Low-Light & Nocturnal Feeding Window (up to 15 pts)
+        // 3. Twilight, Cloud-Cover & Nocturnal Light Gradation (up to 16 pts)
         const dawnDiff = circularMinDiff(min, solar.sunriseMin);
         const duskDiff = circularMinDiff(min, solar.sunsetMin);
         const isNight = min < solar.sunriseMin || min > solar.sunsetMin;
+        const wxSlot = state.weatherSeries && state.weatherSeries[hourIdx];
+        const windSlot = state.windSeries && state.windSeries[hourIdx];
+        const wxCode = wxSlot ? wxSlot.code : null;
+        const windSpd = windSlot ? windSlot.speed : 0;
+        const isOvercastOrWet = wxCode != null && (wxCode === 3 || (wxCode >= 45 && wxCode <= 99));
+        const isPartlyCloudy = wxCode === 1 || wxCode === 2;
+
         let lightPts = 5;
-        if (dawnDiff <= 55) {
-          lightPts = 15;
-          drivers.push({ text: "+15 Dawn Window", cls: "driver-gold" });
-        } else if (duskDiff <= 60) {
-          lightPts = 15;
-          drivers.push({ text: "+15 Dusk Window", cls: "driver-gold" });
+        if (dawnDiff <= 35) {
+          lightPts = 16;
+          drivers.push({ text: "+16 Peak Dawn Twilight", cls: "driver-gold" });
+        } else if (dawnDiff <= 75) {
+          lightPts = 13;
+          drivers.push({ text: "+13 Dawn Transition", cls: "driver-pos" });
+        } else if (duskDiff <= 40) {
+          lightPts = 16;
+          drivers.push({ text: "+16 Peak Dusk Twilight", cls: "driver-gold" });
+        } else if (duskDiff <= 80) {
+          lightPts = 13;
+          drivers.push({ text: "+13 Dusk Transition", cls: "driver-pos" });
         } else if (isNight) {
           lightPts = 12;
           drivers.push({ text: "+12 Night Feed", cls: "driver-pos" });
+        } else if (isOvercastOrWet) {
+          lightPts = 11;
+          drivers.push({ text: "+11 Overcast Low-Light", cls: "driver-pos" });
+        } else if (isPartlyCloudy || windSpd >= 9) {
+          lightPts = 8;
+          drivers.push({ text: "+8 Broken Light / Chop", cls: "" });
         } else {
-          drivers.push({ text: "+5 Midday", cls: "" });
+          // Cool-water sunny midday warming boost on shallow flats/structure
+          if (isLateFallWinter && min >= 690 && min <= 930) {
+            lightPts = 8;
+            drivers.push({ text: "+8 Midday Solar Warmth", cls: "" });
+          } else {
+            lightPts = 5;
+            drivers.push({ text: "+5 Bright Midday", cls: "" });
+          }
         }
 
         // 4. Solunar Transit Window (up to 16 pts)
@@ -1337,53 +1357,59 @@
           drivers.push({ text: "+6 Off-Solunar", cls: "" });
         }
 
-        // 5. Water Temp & River Flow (USGS: flow applied on tidal/river spots)
+        // 5. Water Temp & River Flow (USGS: avoid double-penalizing cool water in late fall/winter)
         let usgsPts = 0;
-        if (state.usgsData) {
-          const { tempF, cfs } = state.usgsData;
-          if (tempF != null) {
-            if (tempF >= 52 && tempF <= 80) {
-              usgsPts += 5;
-              drivers.push({ text: `+5 Prime Temp (${Math.round(tempF)}°F)`, cls: "driver-pos" });
-            } else if (tempF >= 44 && tempF < 52) {
-              usgsPts += 2;
-              drivers.push({ text: `+2 Cool Water (${Math.round(tempF)}°F)`, cls: "" });
-            } else if (tempF < 44) {
-              usgsPts -= 3;
-              drivers.push({ text: `-3 Cold Water (${Math.round(tempF)}°F)`, cls: "driver-neg" });
-            } else {
-              usgsPts -= 1;
-              drivers.push({ text: `-1 Warm Temp (${Math.round(tempF)}°F)`, cls: "" });
-            }
+        const tempF = state.usgsData && state.usgsData.tempF != null
+          ? state.usgsData.tempF
+          : (wxSlot ? wxSlot.tempF : null);
+        const cfs = state.usgsData ? state.usgsData.cfs : null;
+
+        if (tempF != null) {
+          if (tempF >= 54 && tempF <= 80) {
+            usgsPts += 5;
+            drivers.push({ text: `+5 Prime Temp (${Math.round(tempF)}°F)`, cls: "driver-pos" });
+          } else if (tempF >= 44 && tempF < 54) {
+            usgsPts += 3;
+            drivers.push({ text: `+3 Cool Water (${Math.round(tempF)}°F)`, cls: "driver-pos" });
+          } else if (tempF < 44) {
+            usgsPts -= 1;
+            drivers.push({ text: `-1 Cold Water (${Math.round(tempF)}°F)`, cls: "" });
+          } else {
+            usgsPts -= 1;
+            drivers.push({ text: `-1 Warm Temp (${Math.round(tempF)}°F)`, cls: "" });
           }
-          if (loc.isTidal && cfs != null) {
-            if (cfs >= 250 && cfs <= 2500) {
-              usgsPts += 4;
-              drivers.push({ text: `+4 River Flow (${Math.round(cfs)} cfs)`, cls: "driver-pos" });
-            } else if (cfs > 2500 && cfs <= 4500) {
-              usgsPts += 2;
-              drivers.push({ text: `+2 High Flow (${Math.round(cfs)} cfs)`, cls: "" });
-            } else if (cfs < 100) {
-              usgsPts -= 2;
-              drivers.push({ text: `-2 Low Flow`, cls: "driver-neg" });
-            }
+        }
+        if (loc.isTidal && cfs != null) {
+          if (cfs >= 250 && cfs <= 2500) {
+            usgsPts += 4;
+            drivers.push({ text: `+4 River Flow (${Math.round(cfs)} cfs)`, cls: "driver-pos" });
+          } else if (cfs > 2500 && cfs <= 4500) {
+            usgsPts += 2;
+            drivers.push({ text: `+2 High Flow (${Math.round(cfs)} cfs)`, cls: "" });
+          } else if (cfs < 100) {
+            usgsPts -= 2;
+            drivers.push({ text: `-2 Low Flow`, cls: "driver-neg" });
           }
         }
 
-        // 6. Gentle seasonal pace modifier (-2 in late fall/winter, -1 in shoulder)
+        // 6. Cool-water window sharpening (prevents flatlined scores while highlighting prime tide/front windows)
         let seasonPts = 0;
         if (isLateFallWinter) {
-          seasonPts = -2;
-          drivers.push({ text: "-2 Late-Fall Pace", cls: "" });
+          const activeWindow = (slackMult === 1.0 && (strongCurrent || !loc.isTidal)) && (preFrontSurge || lightPts >= 12 || solunarPts >= 16);
+          seasonPts = activeWindow ? 2 : -1;
+          drivers.push({
+            text: activeWindow ? "+2 Cool-Water Feed Window" : "-1 Cool-Water Pace",
+            cls: activeWindow ? "driver-pos" : ""
+          });
         } else if (isShoulder) {
-          seasonPts = -1;
+          seasonPts = 0;
         }
 
-        // 7. Confluence Bonus (+7 when moving current/drift aligns with pre-front drop, low-light, or major solunar)
+        // 7. Confluence Bonus (+8 when moving current/drift aligns with pre-front drop, low-light, or major solunar)
         let bonusPts = 0;
         if (slackMult === 1.0 && (strongCurrent || !loc.isTidal) && (preFrontSurge || lightPts >= 12 || solunarPts >= 16)) {
-          bonusPts = 7;
-          drivers.push({ text: "+7 Bite Confluence", cls: "driver-gold" });
+          bonusPts = 8;
+          drivers.push({ text: "+8 Bite Confluence", cls: "driver-gold" });
         }
 
         const rawSum = tidePts + baroPts + lightPts + solunarPts + usgsPts + seasonPts + bonusPts;
@@ -1492,12 +1518,6 @@
 
       const waveEl = document.getElementById("riverWaveStrip");
       waveEl.classList.toggle("slack", slot.slackMult < 1 || slot.phase === "stillwater");
-
-      // Drivers
-      const driversWrap = document.getElementById("driversWrap");
-      driversWrap.innerHTML = slot.drivers
-        .map(d => `<span class="driver-pill ${d.cls}">${d.text}</span>`)
-        .join("");
 
       // Timeline SVG
       renderColorScaleAndTides(slotIdx);
