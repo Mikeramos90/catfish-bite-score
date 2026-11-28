@@ -37,7 +37,7 @@ jobs:
         run: |
           npm init -y
           npm install @capacitor/core@^6.1.2 @capacitor/cli@^6.1.2 @capacitor/android@^6.1.2
-          npx cap init "Catfish Bite Score" "com.catfish.bitescore" --web-dir=www
+          npx cap init "Katfish Bites" "com.Katfish.bites" --web-dir=www
           npx cap add android
           npx cap sync android
 
@@ -66,8 +66,8 @@ jobs:
             sleep 20
           done
 
-      - name: Upload Catfish Bite Score APK
+      - name: Upload Katfish Bites APK
         uses: actions/upload-artifact@v4
         with:
-          name: Catfish-Bite-Score-APK
+          name: Katfish-Bites-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
