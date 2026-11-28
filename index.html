@@ -899,25 +899,6 @@
       </svg>
     </div>
 
-    <!-- Multi-Catch Bite Calibration Logger -->
-    <div class="card">
-      <div class="log-header">
-        <span id="biasSummary" class="bias-text">In 1.05x · Out 0.95x (0 fish / 0 logs)</span>
-        <button id="resetLogsBtn" class="reset-link">Reset logs</button>
-      </div>
-      <div class="log-stack">
-        <div class="catch-row">
-          <div class="qty-stepper">
-            <button type="button" id="qtyMinusBtn" class="qty-btn" aria-label="Decrease catch count">−</button>
-            <span id="catchQtyVal" class="qty-val">1</span>
-            <button type="button" id="qtyPlusBtn" class="qty-btn" aria-label="Increase catch count">+</button>
-          </div>
-          <button type="button" id="logBiteBtn" class="btn-log-bite">✓ Landed Catfish</button>
-        </div>
-        <button type="button" id="logSkunkBtn" class="btn-skunk">✕ Skunked / No Bites</button>
-      </div>
-      <div id="recentLogsWrap" class="recent-logs"></div>
-    </div>
   </div>
 
   <!-- Pin Location Modal -->
@@ -1549,17 +1530,23 @@
         };
       });
 
-      // Bias & Logs
+      // Bias & Logs (guarded in case logger UI is removed)
       const loc = getActiveLocation();
       const bias = getLocationBias(loc.id);
-      document.getElementById("biasSummary").textContent =
-        `In ${bias.inMult.toFixed(2)}x · Out ${bias.outMult.toFixed(2)}x (${bias.totalFish} fish / ${bias.totalLogs} logs)`;
+      const biasSummaryEl = document.getElementById("biasSummary");
+      if (biasSummaryEl) {
+        biasSummaryEl.textContent =
+          `In ${bias.inMult.toFixed(2)}x · Out ${bias.outMult.toFixed(2)}x (${bias.totalFish} fish / ${bias.totalLogs} logs)`;
+      }
 
-      const recent = state.logs.filter(l => l.locId === loc.id).slice(-4).reverse();
-      document.getElementById("recentLogsWrap").innerHTML = recent.map(r => {
-        const label = r.qty > 0 ? `${r.qty} Catfish` : "Skunked";
-        return `<span class="log-tag">${label} · ${r.phase} (${r.time})</span>`;
-      }).join("");
+      const recentLogsWrapEl = document.getElementById("recentLogsWrap");
+      if (recentLogsWrapEl) {
+        const recent = state.logs.filter(l => l.locId === loc.id).slice(-4).reverse();
+        recentLogsWrapEl.innerHTML = recent.map(r => {
+          const label = r.qty > 0 ? `${r.qty} Catfish` : "Skunked";
+          return `<span class="log-tag">${label} · ${r.phase} (${r.time})</span>`;
+        }).join("");
+      }
     }
 
     function scoreToColor(score) {
@@ -2143,59 +2130,6 @@
       scaleStage.addEventListener("pointermove", e => {
         if (e.buttons === 1) scrubFromPointer(e.clientX);
       });
-
-      // Catch Qty & Logging
-      document.getElementById("qtyMinusBtn").onclick = () => {
-        state.catchQty = Math.max(1, state.catchQty - 1);
-        document.getElementById("catchQtyVal").textContent = state.catchQty;
-      };
-      document.getElementById("qtyPlusBtn").onclick = () => {
-        state.catchQty = Math.min(99, state.catchQty + 1);
-        document.getElementById("catchQtyVal").textContent = state.catchQty;
-      };
-
-      document.getElementById("logBiteBtn").onclick = () => {
-        const loc = getActiveLocation();
-        const slot = state.daySlots[Math.round(state.minuteOfDay / 5)];
-        state.logs.push({
-          locId: loc.id,
-          date: state.dateStr,
-          time: formatMinutes(state.minuteOfDay),
-          phase: slot.phase,
-          qty: state.catchQty
-        });
-        saveLogs();
-        computeDayModel();
-        renderAll();
-        showToast(`Logged ${state.catchQty} catfish (${slot.phaseLabel})`);
-        state.catchQty = 1;
-        document.getElementById("catchQtyVal").textContent = "1";
-      };
-
-      document.getElementById("logSkunkBtn").onclick = () => {
-        const loc = getActiveLocation();
-        const slot = state.daySlots[Math.round(state.minuteOfDay / 5)];
-        state.logs.push({
-          locId: loc.id,
-          date: state.dateStr,
-          time: formatMinutes(state.minuteOfDay),
-          phase: slot.phase,
-          qty: 0
-        });
-        saveLogs();
-        computeDayModel();
-        renderAll();
-        showToast(`Logged skunked session (${slot.phaseLabel})`);
-      };
-
-      document.getElementById("resetLogsBtn").onclick = () => {
-        const loc = getActiveLocation();
-        state.logs = state.logs.filter(l => l.locId !== loc.id);
-        saveLogs();
-        computeDayModel();
-        renderAll();
-        showToast("Cleared logs for this spot");
-      };
 
       // Modals
       document.getElementById("openDropPinBtn").onclick = openDropPinModal;
