@@ -1,6 +1,6 @@
 {
-  "appId": "com.catfish.bitescore",
-  "appName": "Catfish Bite Score",
+  "appId": "com.Katfish.bites",
+  "appName": "Katfish Bites",
   "webDir": "www",
   "bundledWebRuntime": false,
   "server": {
